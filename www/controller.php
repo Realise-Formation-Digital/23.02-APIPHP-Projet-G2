@@ -17,7 +17,8 @@ $uri === "/beers" ? manageBeers() : manageIngredients();
  * @return void
  */
 function manageBeers(){
-    var_dump('beers');
+    $beer = new Beers();
+    var_dump($beer);
 }
 
 /**
