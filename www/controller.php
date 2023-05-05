@@ -31,7 +31,7 @@ function manageIngredients(){
 }
 
 
-
+if ($uri) {}
 else {
     $resultat = $beer->search();
 }
