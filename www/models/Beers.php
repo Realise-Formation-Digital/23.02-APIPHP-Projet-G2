@@ -3,9 +3,7 @@
 require_once("./config.php");
 
 class Beers{
-    private $connection = null;
-
-    private $pdo;
+    private $connection;
 
     /**
      * Constructor - Connect to the database.
@@ -28,10 +26,10 @@ class Beers{
 
     public function readBeer($id){
           try {
-          $stmt = $this->pdo->prepare("SELECT * FROM beers WHERE id=?");
+          $stmt = $this->connection->prepare("SELECT * FROM beers WHERE id=?");
           $stmt->execute([$id]);
-          $client = $stmt->fetch(PDO::FETCH_OBJ);
-          return $client;
+          $beer = $stmt->fetch(PDO::FETCH_OBJ);
+          return $beer;
         } catch(Exception $e) {
           throw $e;
         }
