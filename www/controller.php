@@ -12,11 +12,12 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 //Choisir le controller a appelé en fonction du chemin
 if (preg_match('#^/beers#', $uri)) {
-  $res = manageBeers();
+    $res = manageBeers();
 } else {
-  $res = manageIngredients();
+    $res = $res = manageIngredients();
 }
-
+header('Content-Type:application/json;charset=utf-8');
+echo json_encode($res);
 
 
 /**
@@ -29,8 +30,19 @@ function manageBeers(){
     $method = $_SERVER['REQUEST_METHOD'];
     $body = json_decode(file_get_contents('php://input'), true);
     parse_str($_SERVER['QUERY_STRING'], $query);
+    // Récupération des variables.
     $id = isset($query['id']) ? $query['id'] : '';
     switch($method) {
+        case 'GET':
+            if ($id) {
+              $resultat = $beer->readBeer($id);
+              var_dump('avec id');
+            } else {
+              $resultat = $beer->searchBeers();
+              return $resultat;
+              break;
+            }
+          
         case 'POST':
             try {
             //controler les entrées
@@ -141,4 +153,10 @@ function manageIngredients(){
     var_dump('ingredients');
 }
 
+
+if ($uri) {}
+else {
+    $resultat = $beer->search();
+
+}
 ?>
