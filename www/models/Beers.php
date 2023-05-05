@@ -19,21 +19,49 @@ class Beers{
       }      
     }
 
-    public function searchBeers(){}
-
-    public function createBeer(){
-      
+    public function searchBeers() {
+    try {
+      $stmt = $this->connection->prepare("SELECT * FROM beers");
+      $stmt->execute();
+      $beers = $stmt->fetchAll(PDO::FETCH_OBJ);
+      return $beers;
+    } catch(Exception $e) {
+      throw $e;
     }
+  }
+    
+    /**
+     * createBeer
+     *
+     * @param  mixed $array tableau recuperer du controller
+     * 
+     */
+    public function createBeer($array){
+    try{
+      //recuperer chaque valeur
+      $tab=[];
+      foreach($array as $ar){
+        array_push($tab,$ar);
+      }
+      $tabFood=[];
+      //recuperer vla food_pairing
+      foreach($tab[5] as $t){
+        array_push($tabFood,$t);
+      }
 
-    public function readBeer($id){
-          try {
-          $stmt = $this->connection->prepare("SELECT * FROM beers WHERE id=?");
-          $stmt->execute([$id]);
-          $beer = $stmt->fetch(PDO::FETCH_OBJ);
-          return $beer;
-        } catch(Exception $e) {
-          throw $e;
-        }
+      //implode — Rassemble les éléments d'un tableau en une chaîne
+      //Les cles du tableau sont les noms de colonnes
+      $keys = implode(", ", array_keys($array));
+      $sql = "INSERT INTO beers ($keys,food_pairing2,food_pairing3) VALUES (?,?,?,?,?,?,?,?,?,?)";
+      $stmt = $this->connection->prepare($sql);
+      $stmt->execute(array($tab[0],$tab[1],$tab[2],$tab[3],$tab[4],$tabFood[0],$tab[6],$tab[7],$tabFood[1],$tabFood[2]));
+      $id = $this->connection->lastInsertId();
+      return $id;
+      // return $this->read($id);
+    } 
+    catch(Exception $e) {
+      throw $e;
+    }
     }
 
     public function updateBeer(){}

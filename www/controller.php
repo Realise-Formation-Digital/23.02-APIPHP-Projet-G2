@@ -12,10 +12,11 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 if (preg_match('#^/beers#', $uri)) {
     $res = manageBeers();
 } else {
-    $res = manageIngredients();
+    $res = $res = manageIngredients();
 }
 header('Content-Type:application/json;charset=utf-8');
 echo json_encode($res);
+
 
 /**
  * manageBeers
@@ -27,8 +28,8 @@ function manageBeers(){
     $method = $_SERVER['REQUEST_METHOD'];
     $body = json_decode(file_get_contents('php://input'), true);
     parse_str($_SERVER['QUERY_STRING'], $query);
+    // Récupération des variables.
     $id = isset($query['id']) ? $query['id'] : '';
-    
     switch($method) {
         case 'GET':
             if ($id) {
@@ -49,7 +50,9 @@ function manageBeers(){
             if (!$body) {
                 throw new Exception("Aucune donnée n'a été transmise dans le formulaire");
               }
-            
+              if (!isset($body['id'])) {
+                throw new Exception("Aucun id n'a été spécifié");
+              }
               if (!isset($body['name'])) {
                 throw new Exception("Aucun nom n'a été spécifié");
               }
@@ -101,3 +104,11 @@ function manageIngredients()
 {
     // var_dump('ingredients');
 }
+
+
+if ($uri) {}
+else {
+    $resultat = $beer->search();
+
+}
+?>
