@@ -2,7 +2,7 @@
 
 
 class Beers{
-    private $connection = null;
+    private $connection;
 
     /**
      * Constructor - Connect to the database.
@@ -28,8 +28,41 @@ class Beers{
       throw $e;
     }
   }
+    
+    /**
+     * createBeer
+     *
+     * @param  mixed $array tableau recuperer du controller
+     * 
+     */
+    public function createBeer($array){
+    try{
+      //recuperer chaque valeur
+      $tab=[];
+      foreach($array as $ar){
+        array_push($tab,$ar);
+      }
+      //recuperer vla food_pairing
+      $tabFood = [];
+      foreach($tab[6] as $t){
+        array_push($tabFood,$t);
+      }
 
-    public function createBeer(){}
+      //implode — Rassemble les éléments d'un tableau en une chaîne
+      //Les cles du tableau sont les noms de colonnes
+      $keys = implode(", ", array_keys($array));
+      
+      $sql = "INSERT INTO beers ($keys,food_pairing2,food_pairing3) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+      $stmt = $this->connection->prepare($sql);
+      $stmt->execute(array($tab[0],$tab[1],$tab[2],$tab[3],$tab[4],$tab[5],$tabFood[0],$tab[7],$tab[8],$tabFood[1],$tabFood[2]));
+      $id = $this->connection->lastInsertId();
+      return $id;
+      // return $this->read($id);
+    } 
+    catch(Exception $e) {
+      throw $e;
+    }
+    }
 
     public function readBeer(){}
 
