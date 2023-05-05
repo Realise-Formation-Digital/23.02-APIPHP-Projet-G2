@@ -21,7 +21,9 @@ class Beers{
 
     public function searchBeers(){}
 
-    public function createBeer(){}
+    public function createBeer(){
+      
+    }
 
     public function readBeer($id){
           try {

@@ -32,15 +32,17 @@ function manageBeers(){
             if ($id) {
                 $beer->readBeer($id);
             }
+            else {
+                $resultat = $client->search();
+              }
+              break;
         case 'POST':
             try {
             //controler les entrées
             if (!$body) {
                 throw new Exception("Aucune donnée n'a été transmise dans le formulaire");
               }
-              if (!isset($body['id'])) {
-                throw new Exception("Aucun id n'a été spécifié");
-              }
+            
               if (!isset($body['name'])) {
                 throw new Exception("Aucun nom n'a été spécifié");
               }
@@ -69,7 +71,7 @@ function manageBeers(){
             $keys = array_keys($body);
             $valueToInsert = [];
             foreach($keys as $key) {
-                if(in_array($key, ['id','name', 'tagline', 'first_brewed', 'description', 'image_url','brewers_tips','contributed_by','food_pairing'])){
+                if(in_array($key, ['name', 'tagline', 'first_brewed', 'description', 'image_url','brewers_tips','contributed_by','food_pairing'])){
                     $valueToInsert[$key] = $body[$key];
                 }
             }
@@ -81,6 +83,7 @@ function manageBeers(){
             die($e);
           }
     }
+}
 
 /**
  * manageIngredients
