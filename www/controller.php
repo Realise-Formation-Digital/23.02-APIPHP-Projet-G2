@@ -30,4 +30,9 @@ function manageIngredients(){
     var_dump('ingredients');
 }
 
+
+
+else {
+    $resultat = $beer->search();
+}
 ?>

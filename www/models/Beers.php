@@ -18,7 +18,16 @@ class Beers{
       }      
     }
 
-    public function searchBeers(){}
+    public function searchBeers() {
+    try {
+      $stmt = $this->pdo->prepare("SELECT * FROM beers");
+      $stmt->execute();
+      $clients = $stmt->fetchAll(PDO::FETCH_OBJ);
+      return $beers;
+    } catch(Exception $e) {
+      throw $e;
+    }
+  }
 
     public function createBeer(){}
 
