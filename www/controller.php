@@ -9,7 +9,7 @@ require_once __DIR__ . "/models/Ingredients.php";
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 //Choisir le controller a appelé en fonction du chemin
-$uri === "/beers" ? manageBeers() : manageIngredients();
+$uri === "/beers" ? $res = manageBeers() : $res = manageIngredients();
 
 /**
  * manageBeers

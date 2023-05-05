@@ -20,7 +20,7 @@ class Beers{
 
     public function searchBeers() {
     try {
-      $stmt = $this->pdo->prepare("SELECT * FROM beers");
+      $stmt = $this->connection->prepare("SELECT * FROM beers");
       $stmt->execute();
       $clients = $stmt->fetchAll(PDO::FETCH_OBJ);
       return $beers;
