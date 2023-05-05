@@ -11,22 +11,37 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 //Choisir le controller a appelé en fonction du chemin
 $uri === "/beers" ? manageBeers() : manageIngredients();
 
+$body = json_decode(file_get_contents('php://input'));
+
+
+
+
 /**
  * manageBeers
  *
  * @return void
  */
 function manageBeers(){
-    var_dump('beers');
+    $method = $_SERVER['REQUEST_METHOD'];
+    $id = isset($query['id']) ? $query['id'] : '';
+    $beers = new Beers;
+    
+    
+    switch($method) {
+        case 'GET':
+          if ($id) {
+            $beers->read($id);
+          }
+    var_dump($beers);
 }
-
+}
 /**
  * manageIngredients
  *
  * @return void
  */
 function manageIngredients(){
-    var_dump('ingredients');
+   // var_dump('ingredients');
 }
 
 ?>

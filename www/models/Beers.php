@@ -1,8 +1,11 @@
 <?php
 
+require_once("./config.php");
 
 class Beers{
     private $connection = null;
+
+    private $pdo;
 
     /**
      * Constructor - Connect to the database.
@@ -19,10 +22,20 @@ class Beers{
     }
 
     public function searchBeers(){}
+    
 
     public function createBeer(){}
 
-    public function readBeer(){}
+    public function readBeer($id){
+          try {
+          $stmt = $this->pdo->prepare("SELECT * FROM beers WHERE id=?");
+          $stmt->execute([$id]);
+          $client = $stmt->fetch(PDO::FETCH_OBJ);
+          return $client;
+        } catch(Exception $e) {
+          throw $e;
+        }
+    }
 
     public function updateBeer(){}
 
