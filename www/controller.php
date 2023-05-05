@@ -15,8 +15,8 @@ if (preg_match('#^/beers#', $uri)) {
     $res = manageIngredients();
 }
 header('Content-Type:application/json;charset=utf-8');
-echo json_encode($res);
 
+echo (json_encode($res));
 
 /**
  * manageBeers
@@ -30,20 +30,18 @@ function manageBeers(){
     parse_str($_SERVER['QUERY_STRING'], $query);
     // Récupération des variables.
     $id = isset($query['id']) ? $query['id'] : '';
+
     switch($method) {
         case 'GET':
             if ($id) {
                 $resultat = $beer->readBeer($id);
-                return $beer;
-                
-                var_dump('bière : '.$resultat);
-                break;
+                return $resultat;
             }
             else {
                 $resultat = $beer->searchBeers();
-                break;
+                return $resultat;
               }
-              
+            break;
         case 'POST':
             try {
             //controler les entrées
