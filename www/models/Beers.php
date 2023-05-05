@@ -1,6 +1,5 @@
 <?php
 
-
 class Beers
 {
   private $connection;
@@ -91,7 +90,16 @@ class Beers
     }
   }
 
-  public function deleteBeer()
+  public function deleteBeer($id)
   {
+    try {
+      // $beer = $this->readBeer($id);
+      $sql = "DELETE FROM beers WHERE id=?";
+      $stmt = $this->connection->prepare($sql);
+      $stmt->execute(array($id));
+      return ['message' => "La bière a été correctement supprimé"];
+    } catch(Exception $e) {
+      throw $e;
+    }
   }
 }
