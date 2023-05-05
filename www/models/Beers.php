@@ -92,7 +92,7 @@ class Beers
       $sql = "UPDATE beers SET name=?,tagline=?,first_brewed=?,description=?,image_url=?,brewers_tips=?,contributed_by=?,food_pairing=?,food_pairing2=?,food_pairing3=? WHERE id=?";
       $stmt = $this->connection->prepare($sql);
       $stmt->execute(array($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[6], $tab[7], $tabFood[0], $tabFood[1], $tabFood[2], $id));
-      return $id;
+      return $this->readBeer($id);
     } catch (Exception $e) {
       throw $e;
     }
