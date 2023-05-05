@@ -75,10 +75,6 @@ class Beers
     }
   }
 
-  public function readBeer()
-  {
-  }
-
   public function updateBeer($array, $id)
   {
     try {
