@@ -33,19 +33,22 @@ class Beers{
       foreach($array as $ar){
         array_push($tab,$ar);
       }
+  
       //recuperer vla food_pairing
       $tabFood = [];
-      foreach($tab[6] as $t){
+      foreach($tab[5] as $t){
         array_push($tabFood,$t);
       }
+      var_dump($tab);
 
       //implode — Rassemble les éléments d'un tableau en une chaîne
       //Les cles du tableau sont les noms de colonnes
       $keys = implode(", ", array_keys($array));
+      var_dump($keys);
       
-      $sql = "INSERT INTO beers ($keys,food_pairing2,food_pairing3) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+      $sql = "INSERT INTO beers ($keys,food_pairing2,food_pairing3) VALUES (?,?,?,?,?,?,?,?,?,?)";
       $stmt = $this->connection->prepare($sql);
-      $stmt->execute(array($tab[0],$tab[1],$tab[2],$tab[3],$tab[4],$tab[5],$tabFood[0],$tab[7],$tab[8],$tabFood[1],$tabFood[2]));
+      $stmt->execute(array($tab[0],$tab[1],$tab[2],$tab[3],$tab[4],$tabFood[0],$tab[6],$tab[7],$tabFood[1],$tabFood[2]));
       $id = $this->connection->lastInsertId();
       return $id;
       // return $this->read($id);
