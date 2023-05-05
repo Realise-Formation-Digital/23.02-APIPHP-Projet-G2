@@ -9,7 +9,13 @@ require_once __DIR__ . "/models/Ingredients.php";
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 //Choisir le controller a appelé en fonction du chemin
-$uri === "/beers" ? $res = manageBeers() : $res = manageIngredients();
+if (preg_match('#^/beers#', $uri)) {
+    $res = manageBeers();
+} else {
+    $res = manageIngredients();
+}
+var_dump('uri='.$uri);
+
 
 /**
  * manageBeers
@@ -18,6 +24,7 @@ $uri === "/beers" ? $res = manageBeers() : $res = manageIngredients();
  */
 function manageBeers(){
     $beer = new Beers ();
+    var_dump('res='.$res);
 }
 
 /**
@@ -33,5 +40,6 @@ function manageIngredients(){
 if ($uri) {}
 else {
     $resultat = $beer->search();
+
 }
 ?>
