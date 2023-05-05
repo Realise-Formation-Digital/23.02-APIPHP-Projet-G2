@@ -11,14 +11,13 @@ require_once __DIR__ . "/models/Ingredients.php";
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 //Choisir le controller a appelé en fonction du chemin
-$uri === "/beers" ? $r = manageBeers() : $r = manageIngredients();
+$uri === "/beers" ? $res = manageBeers() : $res = manageIngredients();
 
-var_dump($r);
 
 /**
  * manageBeers
  *
- * @return void
+ * @return array
  */
 function manageBeers(){
     $beer = new Beers();
@@ -27,6 +26,39 @@ function manageBeers(){
     
     switch($method) {
         case 'POST':
+            try {
+            //controler les entrées
+            if (!$body) {
+                throw new Exception("Aucune donnée n'a été transmise dans le formulaire");
+              }
+              if (!isset($body['id'])) {
+                throw new Exception("Aucun id n'a été spécifié");
+              }
+              if (!isset($body['name'])) {
+                throw new Exception("Aucun nom n'a été spécifié");
+              }
+              if (!isset($body['tagline'])) {
+                throw new Exception("Aucune tag line n'a été spécifié");
+              }
+              if (!isset($body['first_brewed'])) {
+                throw new Exception("Aucun date de brassage n'a été spécifié");
+              }
+              if (!isset($body['description'])) {
+                throw new Exception("Aucune description n'a été spécifié");
+              }
+              if (!isset($body['image_url'])) {
+                throw new Exception("Aucun chemin d'image n'a été spécifié");
+              }
+              if (!isset($body['brewers_tips'])) {
+                throw new Exception("Aucune façon de brasser n'a été spécifié");
+              }
+              if (!isset($body['contributed_by'])) {
+                throw new Exception("Aucun(e) contributeur(se) n'a été spécifié");
+              }
+              if (!isset($body['food_pairing'])) {
+                throw new Exception("Aucune association à de la nourriture n'a été spécifié");
+              }
+              
             $keys = array_keys($body);
             $valueToInsert = [];
             foreach($keys as $key) {
@@ -37,6 +69,10 @@ function manageBeers(){
             $resultat = $beer->createBeer($valueToInsert);
             return $resultat;
             break;
+        }
+        catch (Error $e) {
+            die($e);
+          }
     }
 }
 
