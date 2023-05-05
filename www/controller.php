@@ -14,7 +14,7 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 if (preg_match('#^/beers#', $uri)) {
     $res = manageBeers();
 } else {
-    $res = $res = manageIngredients();
+    $res = manageIngredients();
 }
 header('Content-Type:application/json;charset=utf-8');
 echo json_encode($res);
@@ -141,6 +141,10 @@ function manageBeers(){
         catch(Error $e){
           die($e);
         }
+        case 'DELETE':
+          $resultat = $beer->deleteBeer($id);
+          return $resultat;
+          break;
     }
 }
 
@@ -154,9 +158,4 @@ function manageIngredients(){
 }
 
 
-if ($uri) {}
-else {
-    $resultat = $beer->search();
-
-}
 ?>
