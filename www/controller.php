@@ -2,10 +2,8 @@
 // Récupération des Models
 require_once __DIR__ . "/models/Beers.php";
 require_once __DIR__ . "/models/Ingredients.php";
- // Récupération des constantes d'accès pour la base de données
- require_once "./config.php";
-
-
+// Récupération des constantes d'accès pour la base de données
+require_once "./config.php";
 
 //récupère le chemin appelé
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -17,8 +15,8 @@ if (preg_match('#^/beers#', $uri)) {
     $res = manageIngredients();
 }
 header('Content-Type:application/json;charset=utf-8');
-echo json_encode($res);
 
+echo (json_encode($res));
 
 /**
  * manageBeers
@@ -32,22 +30,26 @@ function manageBeers(){
     parse_str($_SERVER['QUERY_STRING'], $query);
     // Récupération des variables.
     $id = isset($query['id']) ? $query['id'] : '';
+
     switch($method) {
         case 'GET':
             if ($id) {
-              $resultat = $beer->readBeer($id);
-              var_dump('avec id');
-            } else {
-              $resultat = $beer->searchBeers();
-              return $resultat;
-              break;
+                $resultat = $beer->readBeer($id);
+                return $resultat;
             }
-          
+            else {
+                $resultat = $beer->searchBeers();
+                return $resultat;
+              }
+            break;
         case 'POST':
             try {
             //controler les entrées
             if (!$body) {
                 throw new Exception("Aucune donnée n'a été transmise dans le formulaire");
+              }
+              if (!isset($body['id'])) {
+                throw new Exception("Aucun id n'a été spécifié");
               }
               if (!isset($body['name'])) {
                 throw new Exception("Aucun nom n'a été spécifié");
@@ -153,8 +155,9 @@ function manageBeers(){
  *
  * @return void
  */
-function manageIngredients(){
-    var_dump('ingredients');
+function manageIngredients()
+{
+    // var_dump('ingredients');
 }
 
 
