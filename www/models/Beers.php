@@ -75,18 +75,6 @@ class Beers
     }
   }
 
-  public function readBeer($id)
-  {
-    try {
-      $stmt = $this->connection->prepare("SELECT * FROM beers WHERE id=?");
-      $stmt->execute([$id]);
-      $beer = $stmt->fetch(PDO::FETCH_OBJ);
-      return $beer;
-    } catch(Exception $e) {
-      throw $e;
-    }
-  }
-
   public function updateBeer($array, $id)
   {
     try {
