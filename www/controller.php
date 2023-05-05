@@ -18,7 +18,6 @@ $uri === "/beers" ? manageBeers() : manageIngredients();
  */
 function manageBeers(){
     $beer = new Beers ();
-    var_dump($beer);
 }
 
 /**
