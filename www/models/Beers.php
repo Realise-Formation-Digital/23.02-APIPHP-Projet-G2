@@ -101,11 +101,11 @@ class Beers
   public function deleteBeer($id)
   {
     try {
-      // $beer = $this->readBeer($id);
+      $beer = $this->readBeer($id);
       $sql = "DELETE FROM beers WHERE id=?";
       $stmt = $this->connection->prepare($sql);
       $stmt->execute(array($id));
-      return ['message' => "La bière a été correctement supprimé"];
+      return ['message' => "La bière $beer->name a été correctement supprimé"];
     } catch(Exception $e) {
       throw $e;
     }
