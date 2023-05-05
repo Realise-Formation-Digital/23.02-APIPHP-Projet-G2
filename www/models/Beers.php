@@ -46,7 +46,7 @@ class Beers
      * createBeer
      *
      * @param  mixed $array tableau recuperer du controller
-     * 
+     * retourne l'objet creer
      */
     public function createBeer($array){
     try{
@@ -68,15 +68,10 @@ class Beers
       $stmt = $this->connection->prepare($sql);
       $stmt->execute(array($tab[0],$tab[1],$tab[2],$tab[3],$tab[4],$tabFood[0],$tab[6],$tab[7],$tabFood[1],$tabFood[2]));
       $id = $this->connection->lastInsertId();
-      return $id;
-      // return $this->read($id);
+      return $this->readBeer($id);
     } catch (Exception $e) {
       throw $e;
     }
-  }
-
-  public function readBeer()
-  {
   }
 
   public function updateBeer($array, $id)
@@ -97,7 +92,7 @@ class Beers
       $sql = "UPDATE beers SET name=?,tagline=?,first_brewed=?,description=?,image_url=?,brewers_tips=?,contributed_by=?,food_pairing=?,food_pairing2=?,food_pairing3=? WHERE id=?";
       $stmt = $this->connection->prepare($sql);
       $stmt->execute(array($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[6], $tab[7], $tabFood[0], $tabFood[1], $tabFood[2], $id));
-      return $id;
+      return $this->readBeer($id);
     } catch (Exception $e) {
       throw $e;
     }
@@ -106,11 +101,11 @@ class Beers
   public function deleteBeer($id)
   {
     try {
-      // $beer = $this->readBeer($id);
+      $beer = $this->readBeer($id);
       $sql = "DELETE FROM beers WHERE id=?";
       $stmt = $this->connection->prepare($sql);
       $stmt->execute(array($id));
-      return ['message' => "La bière a été correctement supprimé"];
+      return ['message' => "La bière $beer->name a été correctement supprimé"];
     } catch(Exception $e) {
       throw $e;
     }
