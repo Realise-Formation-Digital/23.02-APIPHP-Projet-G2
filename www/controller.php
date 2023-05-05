@@ -14,6 +14,8 @@ if (preg_match('#^/beers#', $uri)) {
 } else {
     $res = manageIngredients();
 }
+header('Content-Type:application/json;charset=utf-8');
+echo json_encode($res);
 
 /**
  * manageBeers
@@ -30,12 +32,17 @@ function manageBeers(){
     switch($method) {
         case 'GET':
             if ($id) {
-                $beer->readBeer($id);
+                $resultat = $beer->readBeer($id);
+                return $beer;
+                
+                var_dump('bière : '.$resultat);
+                break;
             }
             else {
-                $resultat = $client->search();
+                $resultat = $beer->searchBeers();
+                break;
               }
-              break;
+              
         case 'POST':
             try {
             //controler les entrées
