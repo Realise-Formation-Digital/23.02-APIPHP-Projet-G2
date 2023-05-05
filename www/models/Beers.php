@@ -20,7 +20,6 @@ class Beers{
     }
 
     public function searchBeers(){}
-    
 
     public function createBeer(){}
 
