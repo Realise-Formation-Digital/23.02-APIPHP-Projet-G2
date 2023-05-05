@@ -48,9 +48,6 @@ function manageBeers(){
             if (!$body) {
                 throw new Exception("Aucune donnée n'a été transmise dans le formulaire");
               }
-              if (!isset($body['id'])) {
-                throw new Exception("Aucun id n'a été spécifié");
-              }
               if (!isset($body['name'])) {
                 throw new Exception("Aucun nom n'a été spécifié");
               }
