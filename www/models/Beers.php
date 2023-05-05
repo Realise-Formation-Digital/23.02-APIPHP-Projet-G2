@@ -46,7 +46,7 @@ class Beers
      * createBeer
      *
      * @param  mixed $array tableau recuperer du controller
-     * 
+     * retourne l'objet creer
      */
     public function createBeer($array){
     try{
@@ -68,8 +68,7 @@ class Beers
       $stmt = $this->connection->prepare($sql);
       $stmt->execute(array($tab[0],$tab[1],$tab[2],$tab[3],$tab[4],$tabFood[0],$tab[6],$tab[7],$tabFood[1],$tabFood[2]));
       $id = $this->connection->lastInsertId();
-      return $id;
-      // return $this->read($id);
+      return $this->readBeer($id);
     } catch (Exception $e) {
       throw $e;
     }
