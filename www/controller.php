@@ -58,7 +58,7 @@ function manageBeers(){
               if (!isset($body['food_pairing'])) {
                 throw new Exception("Aucune association à de la nourriture n'a été spécifié");
               }
-              
+
             $keys = array_keys($body);
             $valueToInsert = [];
             foreach($keys as $key) {
@@ -70,9 +70,19 @@ function manageBeers(){
             return $resultat;
             break;
         }
-        catch (Error $e) {
-            die($e);
-          }
+        catch (Error $e) 
+        {
+          die($e);
+        }
+      case 'PUT':
+      case 'PATCH':
+        try{
+          
+
+        }
+        catch(Error $e){
+          die($e);
+        }
     }
 }
 
