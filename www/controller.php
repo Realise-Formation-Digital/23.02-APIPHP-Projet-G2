@@ -156,6 +156,7 @@ function manageIngredients()
 {
   $ingredient = new Ingredients();
   $method = $_SERVER['REQUEST_METHOD'];
+  $body = json_decode(file_get_contents('php://input'), true);
   parse_str($_SERVER['QUERY_STRING'], $query);
   // Récupération des variables.
   $id = isset($query['id']) ? $query['id'] : '';
@@ -170,8 +171,54 @@ function manageIngredients()
             return $resultat;
           }
         break;
-        }
-}
+        
+        case 'PATCH':
+          try{
+  
+              //controler les entrées  type=?,name=?,amount_value=?,amount_unit=?,amount_add=?, amount_attribute=?
+            if (!$body) {
+              throw new Exception("Aucune donnée n'a été transmise dans le formulaire");
+            }
+            if (!isset($body['id'])) {
+              throw new Exception("Aucun nom n'a été spécifié");
+            }
+            if (!isset($body['type'])) {
+              throw new Exception("Aucun type n'a été spécifié");
+            }
+            if (!isset($body['name'])) {
+              throw new Exception("Aucun nom n'a été spécifié");
+            }
+            // if (!isset($body['amount_value'])) {
+            //   throw new Exception("Aucune valeur n'a été spécifiée");
+            // }
+            // if (!isset($body['amount_unit'])) {
+            //   throw new Exception("Aucun unité n'a été spécifié");
+            // }
+            // if (!isset($body['amount_add'])) {
+            //   throw new Exception("Aucun amount_add n'a été spécifié");
+            // }
+            // if (!isset($body['amount_attribute'])) {
+            //   throw new Exception("Aucun amount_attribute n'a été spécifié");
+            // }
+           
+            //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
+          $keys = array_keys($body);
+          $valueToInsert = [];
+          foreach($keys as $key) {
+              if(in_array($key, ['type','name','amount_value','amount_unit','amount_add', 'amount_attribute'])){
+                  $valueToInsert[$key] = $body[$key];
+              }
+          }
+            $resultat = $ingredient->updateIngredient($valueToInsert, $id);
+            return $resultat;
+            break;
+          }
+          catch(Error $e){
+            die($e);
+          }
 
+
+      }
+    }
 
 ?>
