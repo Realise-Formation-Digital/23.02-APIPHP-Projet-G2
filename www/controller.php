@@ -158,7 +158,8 @@ function manageIngredients()
   parse_str($_SERVER['QUERY_STRING'], $query);
   // Récupération des variables.
   $id = isset($query['id']) ? $query['id'] : '';
-  switch($method) {
+  switch($method) 
+  {
     case 'GET':
         if ($id) {
             $resultat = $ingredient->readIngredient($id);
@@ -169,14 +170,19 @@ function manageIngredients()
             return $resultat;
           }
         break;
-        case 'DELETE':
-          $resultat = $ingredient->deleteIngredient($id);
-          return $resultat;
-        break;
+    case 'DELETE':
+      $resultat = $ingredient->deleteIngredient($id);
+      return $resultat;
+    break;
     case 'POST':
         try {
-          
-        $resultat = $ingredient->createIngredient();
+        $type = isset($body['type']) ? $body['type'] : '';
+        $name = isset($body['name']) ? $body['name'] : '';
+        $amount_value = isset($body['amount_value']) ? $body['amount_value'] : '';
+        $amount_unit = isset($body['amount_unit']) ? $body['amount_unit'] : '';
+        $amount_add = isset($body['amount_add']) ? $body['amount_add'] : '';
+        $amount_attribute = isset($body['amount_attribute']) ? $body['amount_attribute'] : '';
+        $resultat = $ingredient->createIngredient($type,$name,$amount_value,$amount_unit,$amount_add,$amount_attribute);
         return $resultat;
         break;
         }
@@ -185,7 +191,7 @@ function manageIngredients()
           die($e);
         }
   }
-    }
+}
 
 
 ?>

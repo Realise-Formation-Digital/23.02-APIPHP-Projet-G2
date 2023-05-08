@@ -30,25 +30,11 @@ class Ingredients{
       }
     }
 
-    public function createIngredient($array){
+    public function createIngredient($type,$name,$amount_value,$amount_unit,$amount_add,$amount_attribute){
       try{
-        //recuperer chaque valeur
-        $tab = [];
-        foreach ($array as $ar) {
-          array_push($tab, $ar);
-        }
-        $tabFood=[];
-        //recuperer vla food_pairing
-        foreach($tab[5] as $t){
-          array_push($tabFood,$t);
-        }
-  
-        //implode — Rassemble les éléments d'un tableau en une chaîne
-        //Les cles du tableau sont les noms de colonnes
-        $keys = implode(", ", array_keys($array));
-        $sql = "INSERT INTO ingredients ($keys) VALUES (?,?,?,?,?,?)";
+        $sql = "INSERT INTO ingredients (type,name,amount_value,amount_unit,amount_add,amount_attribute) VALUES (?,?,?,?,?,?)";
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute(array());
+        $stmt->execute(array($type,$name,$amount_value,$amount_unit,$amount_add,$amount_attribute));
         $id = $this->connection->lastInsertId();
         return $this->readIngredient($id);
       } catch (Exception $e) {
