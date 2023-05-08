@@ -190,8 +190,29 @@ function manageIngredients()
         {
           die($e);
         }
-  }
-}
+        break;
+        case 'PATCH':
+        case 'PUT':
+          try{
+  
+          $keys = array_keys($body);
+          $valueToInsert = [];
+          foreach($keys as $key) {
+            if(in_array($key, ['type','name','amount_value','amount_unit','amount_add', 'amount_attribute'])){
+              $valueToInsert[$key] = $body[$key];
+            }
+          }
+            $resultat = $ingredient->updateIngredient($valueToInsert, $id);
+            var_dump($resultat);
+            return $resultat;
+            break;
+          }
+          catch(Error $e){
+            die($e);
+          }
 
+
+      }
+    }
 
 ?>
