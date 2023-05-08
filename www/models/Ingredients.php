@@ -1,7 +1,9 @@
 <?php
 
+require_once("./config.php");
+
 class Ingredients{
-    private $connection = null;
+    private $connection;
 
     /**
      * Constructor - Connect to the database.
@@ -17,11 +19,29 @@ class Ingredients{
       }      
     }
 
-    public function searchIngredients(){}
+    public function searchIngredients(){
+      try {
+        $stmt = $this->connection->prepare("SELECT * FROM ingredients");
+        $stmt->execute();
+        $beers = $stmt->fetchAll(PDO::FETCH_OBJ);
+        return $beers;
+      } catch(Exception $e) {
+        throw $e;
+      }
+    }
 
     public function createIngredient(){}
 
-    public function readIngredient(){}
+    public function readIngredient($id){
+      try {
+        $stmt = $this->connection->prepare("SELECT * FROM ingredients WHERE id=?");
+        $stmt->execute([$id]);
+        $beer = $stmt->fetch(PDO::FETCH_OBJ);
+        return $beer;
+      } catch(Exception $e) {
+        throw $e;
+      }
+    }
 
     public function updateIngredient ($array, $id)
   {
