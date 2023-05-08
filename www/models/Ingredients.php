@@ -45,7 +45,7 @@ class Ingredients{
 
     public function updateIngredient(){}
 
-    public function deleteIngredient(){
+    public function deleteIngredient($id){
       try {
         $ingredient = $this->readIngredient($id);
         $sql = "DELETE FROM ingredients WHERE id=?";
