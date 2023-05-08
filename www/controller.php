@@ -5,6 +5,9 @@ require_once __DIR__ . "/models/Ingredients.php";
 // Récupération des constantes d'accès pour la base de données
 require_once "./config.php";
 
+// Récupère les trycatchs des ingrédients 
+require_once __DIR__ . "/logic/checkBodyIngredient.php";
+
 //récupère le chemin appelé
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -92,37 +95,6 @@ function manageBeers(){
       case 'PUT':
       case 'PATCH':
         try{
-          //controler les entrées
-          if (!$body) {
-            throw new Exception("Aucune donnée n'a été transmise dans le formulaire");
-          }
-          if (!isset($body['id'])) {
-            throw new Exception("Aucun nom n'a été spécifié");
-          }
-          if (!isset($body['name'])) {
-            throw new Exception("Aucun nom n'a été spécifié");
-          }
-          if (!isset($body['tagline'])) {
-            throw new Exception("Aucune tag line n'a été spécifié");
-          }
-          if (!isset($body['first_brewed'])) {
-            throw new Exception("Aucun date de brassage n'a été spécifié");
-          }
-          if (!isset($body['description'])) {
-            throw new Exception("Aucune description n'a été spécifié");
-          }
-          if (!isset($body['image_url'])) {
-            throw new Exception("Aucun chemin d'image n'a été spécifié");
-          }
-          if (!isset($body['brewers_tips'])) {
-            throw new Exception("Aucune façon de brasser n'a été spécifié");
-          }
-          if (!isset($body['contributed_by'])) {
-            throw new Exception("Aucun(e) contributeur(se) n'a été spécifié");
-          }
-          if (!isset($body['food_pairing'])) {
-            throw new Exception("Aucune association à de la nourriture n'a été spécifié");
-          }
           //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
         $keys = array_keys($body);
         $valueToInsert = [];
@@ -176,6 +148,7 @@ function manageIngredients()
     break;
     case 'POST':
         try {
+        $checkOk = checkBodyIngredient($body);
         $type = isset($body['type']) ? $body['type'] : '';
         $name = isset($body['name']) ? $body['name'] : '';
         $amount_value = isset($body['amount_value']) ? $body['amount_value'] : '';
@@ -194,7 +167,8 @@ function manageIngredients()
         case 'PATCH':
         case 'PUT':
           try{
-  
+          $checkOk = checkBodyIngredient($body);
+
           $keys = array_keys($body);
           $valueToInsert = [];
           foreach($keys as $key) {
