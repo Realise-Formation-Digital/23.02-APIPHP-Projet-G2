@@ -1,5 +1,7 @@
 <?php
 
+require_once("./config.php");
+
 class Ingredients{
     private $connection = null;
 
@@ -25,6 +27,16 @@ class Ingredients{
 
     public function updateIngredient(){}
 
-    public function deleteIngredient(){}
+    public function deleteIngredient(){
+      try {
+        $ingredient = $this->readIngredient($id);
+        $sql = "DELETE FROM ingredients WHERE id=?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute(array($id));
+        return ['message' => "L'ingrédient $ingredient->name a été correctement supprimé"];
+      } catch(Exception $e) {
+        throw $e;
+      }
+    }
 
 }
