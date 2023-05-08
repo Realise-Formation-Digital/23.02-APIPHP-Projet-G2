@@ -169,6 +169,10 @@ function manageIngredients()
             return $resultat;
           }
         break;
+        case 'DELETE':
+          $resultat = $ingredient->deleteIngredient($id);
+          return $resultat;
+        break;
     case 'POST':
         try {
           
@@ -181,8 +185,7 @@ function manageIngredients()
           die($e);
         }
   }
-    
-}
+    }
 
 
 ?>
