@@ -92,8 +92,6 @@ function manageBeers(){
       case 'PUT':
       case 'PATCH':
         try{
-
-
           //controler les entrées
           if (!$body) {
             throw new Exception("Aucune donnée n'a été transmise dans le formulaire");
@@ -156,6 +154,7 @@ function manageIngredients()
 {
   $ingredient = new Ingredients();
   $method = $_SERVER['REQUEST_METHOD'];
+  $body = json_decode(file_get_contents('php://input'),true);
   parse_str($_SERVER['QUERY_STRING'], $query);
   // Récupération des variables.
   $id = isset($query['id']) ? $query['id'] : '';
@@ -170,7 +169,19 @@ function manageIngredients()
             return $resultat;
           }
         break;
+    case 'POST':
+        try {
+          
+        $resultat = $ingredient->createIngredient();
+        return $resultat;
+        break;
         }
+        catch (Error $e) 
+        {
+          die($e);
+        }
+  }
+    
 }
 
 
