@@ -92,8 +92,6 @@ function manageBeers(){
       case 'PUT':
       case 'PATCH':
         try{
-
-
           //controler les entrées
           if (!$body) {
             throw new Exception("Aucune donnée n'a été transmise dans le formulaire");
@@ -156,11 +154,12 @@ function manageIngredients()
 {
   $ingredient = new Ingredients();
   $method = $_SERVER['REQUEST_METHOD'];
-  $body = json_decode(file_get_contents('php://input'), true);
+  $body = json_decode(file_get_contents('php://input'),true);
   parse_str($_SERVER['QUERY_STRING'], $query);
   // Récupération des variables.
   $id = isset($query['id']) ? $query['id'] : '';
-  switch($method) {
+  switch($method) 
+  {
     case 'GET':
         if ($id) {
             $resultat = $ingredient->readIngredient($id);
@@ -171,6 +170,28 @@ function manageIngredients()
             return $resultat;
           }
         break;
+    case 'DELETE':
+      $resultat = $ingredient->deleteIngredient($id);
+      return $resultat;
+    break;
+    case 'POST':
+        try {
+        $type = isset($body['type']) ? $body['type'] : '';
+        $name = isset($body['name']) ? $body['name'] : '';
+        $amount_value = isset($body['amount_value']) ? $body['amount_value'] : '';
+        $amount_unit = isset($body['amount_unit']) ? $body['amount_unit'] : '';
+        $amount_add = isset($body['amount_add']) ? $body['amount_add'] : '';
+        $amount_attribute = isset($body['amount_attribute']) ? $body['amount_attribute'] : '';
+        $resultat = $ingredient->createIngredient($type,$name,$amount_value,$amount_unit,$amount_add,$amount_attribute);
+        return $resultat;
+        break;
+        }
+        catch (Error $e) 
+        {
+          die($e);
+        }
+  }
+}
         
         case 'PATCH':
           try{
