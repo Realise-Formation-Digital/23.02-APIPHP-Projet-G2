@@ -16,10 +16,9 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 //Choisir le controller a appelé en fonction du chemin
 if (preg_match('#^/beers#', $uri)) {
   $res = manageBeers();
-} elseif(preg_match('/^\/beers\/\d+\/ingredients\/\d+$/', $uri)) {
+} elseif (preg_match('/^\/beers\/\d+\/ingredients\/\d+$/', $uri)) {
   $res = manageBeers();
-}
-else{
+} else {
   $res = manageIngredients();
 }
 header('Content-Type:application/json;charset=utf-8');
@@ -40,7 +39,7 @@ function manageBeers()
   $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
   $beer_id = "";
   $ingredient_id = "";
-  preg_match('/^\/beers\/(\d+)\/ingredients\/(\d+)$/', $uri, $matches);  
+  preg_match('/^\/beers\/(\d+)\/ingredients\/(\d+)$/', $uri, $matches);
   // Récupération des variables.
   $id = isset($query['id']) ? $query['id'] : '';
   switch ($method) {
@@ -54,7 +53,7 @@ function manageBeers()
       }
       break;
     case 'POST':
-      if(!isset($matches[1]) && !isset($matches[2])){
+      if (!isset($matches[1]) && !isset($matches[2])) {
         try {
           //methode permettant de controller les valeurs
           $bodyOk = checkBodyBeer($body);
@@ -71,18 +70,16 @@ function manageBeers()
         } catch (Error $e) {
           throw ($e);
         }
-      }
-        else{
-          try{
-            $beer_id = $matches[1];
-            $ingredient_id = $matches[2];
-            $resultat = $beer->addIngredient($beer_id,$ingredient_id);
-            return $resultat;
-          }
-          catch (Error $e){
-            throw $e;
-          }
+      } else {
+        try {
+          $beer_id = $matches[1];
+          $ingredient_id = $matches[2];
+          $resultat = $beer->addIngredient($beer_id, $ingredient_id);
+          return $resultat;
+        } catch (Error $e) {
+          throw $e;
         }
+      }
       break;
     case 'PUT':
     case 'PATCH':
@@ -91,15 +88,15 @@ function manageBeers()
         $bodyOk = checkBodyBeer($body);
         //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
         $keys = array_keys($bodyOk);
-        catch (Error $e) 
-        {
-          die($e);
-        }
-      case 'PUT':
-      case 'PATCH':
-        try{
-          //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
-        $keys = array_keys($body);
+      } catch (Error $e) {
+        die($e);
+      }
+    case 'PUT':
+    case 'PATCH':
+      try {
+        $bodyOk = checkBodyBeer($body);
+        //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
+        $keys = array_keys($bodyOk);
         $valueToInsert = [];
         foreach ($keys as $key) {
           if (in_array($key, ['name', 'tagline', 'first_brewed', 'description', 'image_url', 'brewers_tips', 'contributed_by', 'food_pairing'])) {
@@ -149,15 +146,15 @@ function manageIngredients()
     case 'POST':
       try {
         $checkOk = checkBodyIngredient($body);
-        $type = isset($body['type']) ? $body['type'] : '';
-        $name = isset($body['name']) ? $body['name'] : '';
-        $amount_value = isset($body['amount_value']) ? $body['amount_value'] : '';
-        $amount_unit = isset($body['amount_unit']) ? $body['amount_unit'] : '';
-        $amount_add = isset($body['amount_add']) ? $body['amount_add'] : '';
-        $amount_attribute = isset($body['amount_attribute']) ? $body['amount_attribute'] : '';
-        $resultat = $ingredient->createIngredient($type, $name, $amount_value, $amount_unit, $amount_add, $amount_attribute);
+        $keys = array_keys($body);
+        $valueToInsert = [];
+        foreach ($keys as $key) {
+          if (in_array($key, ['type', 'name', 'amount_value', 'amount_unit', 'amount_add', 'amount_attribute'])) {
+            $valueToInsert[$key] = $body[$key];
+          }
+        }
+        $resultat = $ingredient->createIngredient($valueToInsert);
         return $resultat;
-        break;
       } catch (Error $e) {
         die($e);
       }
@@ -165,7 +162,7 @@ function manageIngredients()
     case 'PATCH':
     case 'PUT':
       try {
-
+        $checkOk = checkBodyIngredient($body);
         $keys = array_keys($body);
         $valueToInsert = [];
         foreach ($keys as $key) {
@@ -174,41 +171,11 @@ function manageIngredients()
           }
         }
         $resultat = $ingredient->updateIngredient($valueToInsert, $id);
-        var_dump($resultat);
         return $resultat;
         break;
       } catch (Error $e) {
         die($e);
       }
+      break;
   }
 }
-        }
-        catch (Error $e) 
-        {
-          die($e);
-        }
-        break;
-        case 'PATCH':
-        case 'PUT':
-          try{
-          $checkOk = checkBodyIngredient($body);
-
-          $keys = array_keys($body);
-          $valueToInsert = [];
-          foreach($keys as $key) {
-            if(in_array($key, ['type','name','amount_value','amount_unit','amount_add', 'amount_attribute'])){
-              $valueToInsert[$key] = $body[$key];
-            }
-          }
-            $resultat = $ingredient->updateIngredient($valueToInsert, $id);
-            var_dump($resultat);
-            return $resultat;
-            break;
-          }
-          catch(Error $e){
-            die($e);
-          }
-
-
-      }
-    }
