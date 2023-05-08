@@ -19,7 +19,12 @@ class Beers
       throw new Exception($e->getMessage());
     }
   }
-
+    
+    /**
+     * searchBeers
+     *
+     * @return tableau de bière
+     */
     public function searchBeers() {
     try {
       $stmt = $this->connection->prepare("SELECT * FROM beers");
@@ -30,7 +35,13 @@ class Beers
       throw $e;
     }
   }
-    
+      
+  /**
+   * readBeer
+   *
+   * @param  mixed $id
+   * @return une biere
+   */
   public function readBeer($id) {
     try {
       $stmt = $this->connection->prepare("SELECT * FROM beers WHERE id=?");
@@ -77,7 +88,33 @@ class Beers
       throw $e;
     }
   }
-
+  
+  /**
+   * addIngredient
+   *
+   * @param  mixed $beer_id
+   * @param  mixed $ingredient_id
+   * @return le tableau d'association
+   */
+  public function addIngredient($beer_id, $ingredient_id){
+    try{
+      
+      $sql = "INSERT INTO beer_ingredient (beer_id,ingredient_id) VALUES (?,?)";
+      $stmt = $this->connection->prepare($sql);
+      $stmt->execute(array($beer_id,$ingredient_id));
+      return $this->readBeer($id);
+    } catch (Exception $e) {
+      throw $e;
+    }
+  }
+  
+  /**
+   * updateBeer
+   *
+   * @param  mixed $array
+   * @param  mixed $id
+   * @return array beer
+   */
   public function updateBeer($array, $id)
   {
     try {

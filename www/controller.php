@@ -13,7 +13,10 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 //Choisir le controller a appelé en fonction du chemin
 if (preg_match('#^/beers#', $uri)) {
   $res = manageBeers();
-} else {
+} elseif(preg_match('/^\/beers\/\d+\/ingredients\/\d+$/', $uri)) {
+  $res = manageBeers();
+}
+else{
   $res = manageIngredients();
 }
 header('Content-Type:application/json;charset=utf-8');
@@ -31,6 +34,10 @@ function manageBeers()
   $method = $_SERVER['REQUEST_METHOD'];
   $body = json_decode(file_get_contents('php://input'), true);
   parse_str($_SERVER['QUERY_STRING'], $query);
+  $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+  $beer_id = "";
+  $ingredient_id = "";
+  preg_match('/^\/beers\/(\d+)\/ingredients\/(\d+)$/', $uri, $matches);  
   // Récupération des variables.
   $id = isset($query['id']) ? $query['id'] : '';
   switch ($method) {
@@ -44,29 +51,41 @@ function manageBeers()
       }
       break;
     case 'POST':
-      try {
-        //methode permettant de controller les valeurs
-        $bodyOk = checkBodyBeer($body);
-        //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
-        $keys = array_keys($bodyOk);
-        $valueToInsert = [];
-        foreach ($keys as $key) {
-          if (in_array($key, ['name', 'tagline', 'first_brewed', 'description', 'image_url', 'brewers_tips', 'contributed_by', 'food_pairing'])) {
-            $valueToInsert[$key] = $body[$key];
+      if(!isset($matches[1]) && !isset($matches[2])){
+        try {
+          //methode permettant de controller les valeurs
+          $bodyOk = checkBodyBeer($body);
+          //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
+          $keys = array_keys($bodyOk);
+          $valueToInsert = [];
+          foreach ($keys as $key) {
+            if (in_array($key, ['name', 'tagline', 'first_brewed', 'description', 'image_url', 'brewers_tips', 'contributed_by', 'food_pairing'])) {
+              $valueToInsert[$key] = $body[$key];
+            }
+          }
+          $resultat = $beer->createBeer($valueToInsert);
+          return $resultat;
+        } catch (Error $e) {
+          throw ($e);
+        }
+      }
+        else{
+          try{
+            $beer_id = $matches[1];
+            $ingredient_id = $matches[2];
+            $resultat = $beer->addIngredient($beer_id,$ingredient_id);
+            return $resultat;
+          }
+          catch (Error $e){
+            throw $e;
           }
         }
-        $resultat = $beer->createBeer($valueToInsert);
-        return $resultat;
-      } catch (Error $e) {
-        throw ($e);
-      }
       break;
     case 'PUT':
     case 'PATCH':
       try {
         //methode permettant de controller les valeurs
         $bodyOk = checkBodyBeer($body);
-        var_dump($bodyOk);
         //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
         $keys = array_keys($bodyOk);
         $valueToInsert = [];
