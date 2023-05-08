@@ -26,7 +26,7 @@ CREATE TABLE `beers` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
   `name` varchar(25) DEFAULT NULL,
   `tagline` varchar(50) NOT NULL,
-  `first_brewed` date NOT NULL,
+  `first_brewed` text NOT NULL,
   `description` varchar(250) NOT NULL,
   `image_url` varchar(500) NOT NULL,
   `brewers_tips` varchar(500) NOT NULL,
