@@ -30,7 +30,17 @@ class Ingredients{
       }
     }
 
-    public function createIngredient(){}
+    public function createIngredient($type,$name,$amount_value,$amount_unit,$amount_add,$amount_attribute){
+      try{
+        $sql = "INSERT INTO ingredients (type,name,amount_value,amount_unit,amount_add,amount_attribute) VALUES (?,?,?,?,?,?)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute(array($type,$name,$amount_value,$amount_unit,$amount_add,$amount_attribute));
+        $id = $this->connection->lastInsertId();
+        return $this->readIngredient($id);
+      } catch (Exception $e) {
+        throw $e;
+      }
+    }
 
     public function readIngredient($id){
       try {
