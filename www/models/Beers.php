@@ -36,11 +36,15 @@ class Beers
       $stmt = $this->connection->prepare("SELECT * FROM beers WHERE id=?");
       $stmt->execute([$id]);
       $beer = $stmt->fetch(PDO::FETCH_OBJ);
+      if($beer === false){
+        $beer = ["message" => "l'id n'existe pas."];
+      }
       return $beer;
     } catch(Exception $e) {
       throw $e;
+      };
     }
-  }
+  
 
     /**
      * createBeer
@@ -105,7 +109,7 @@ class Beers
       $sql = "DELETE FROM beers WHERE id=?";
       $stmt = $this->connection->prepare($sql);
       $stmt->execute(array($id));
-      return ['message' => "La bière $beer->name a été correctement supprimé"];
+      return $beer;
     } catch(Exception $e) {
       throw $e;
     }
