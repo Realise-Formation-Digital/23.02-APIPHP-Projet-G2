@@ -8,7 +8,7 @@ require_once "./config.php";
 require_once './logic/checkBodyBeer.php';
 
 // Récupère les trycatchs des ingrédients 
-require_once __DIR__ . "/logic/checkBodyIngredient.php";
+require_once "./logic/checkBodyIngredient.php";
 
 //récupère le chemin appelé
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -125,18 +125,22 @@ function manageIngredients()
 {
   $ingredient = new Ingredients();
   $method = $_SERVER['REQUEST_METHOD'];
-  $body = json_decode(file_get_contents('php://input'), true);
   parse_str($_SERVER['QUERY_STRING'], $query);
   // Récupération des variables.
   $id = isset($query['id']) ? $query['id'] : '';
   switch ($method) {
     case 'GET':
-      if ($id) {
-        $resultat = $ingredient->readIngredient($id);
-        return $resultat;
-      } else {
-        $resultat = $ingredient->searchIngredients();
-        return $resultat;
+      try{
+        if ($id) {
+          $resultat = $ingredient->readIngredient($id);
+          return $resultat;
+        } else {
+          $resultat = $ingredient->searchIngredients();
+          return $resultat;
+        }
+      }
+      catch(Error $e){
+        throw $e;
       }
       break;
     case 'DELETE':
@@ -145,6 +149,7 @@ function manageIngredients()
       break;
     case 'POST':
       try {
+        $body = json_decode(file_get_contents('php://input'), true);
         $checkOk = checkBodyIngredient($body);
         $keys = array_keys($body);
         $valueToInsert = [];
@@ -162,6 +167,7 @@ function manageIngredients()
     case 'PATCH':
     case 'PUT':
       try {
+        $body = json_decode(file_get_contents('php://input'), true);
         $checkOk = checkBodyIngredient($body);
         $keys = array_keys($body);
         $valueToInsert = [];
@@ -174,7 +180,7 @@ function manageIngredients()
         return $resultat;
         break;
       } catch (Error $e) {
-        die($e);
+        throw($e);
       }
       break;
   }
