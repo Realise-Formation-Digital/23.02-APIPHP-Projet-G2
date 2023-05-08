@@ -154,7 +154,23 @@ function manageBeers(){
  */
 function manageIngredients()
 {
-    // var_dump('ingredients');
+  $ingredient = new Ingredients();
+  $method = $_SERVER['REQUEST_METHOD'];
+  parse_str($_SERVER['QUERY_STRING'], $query);
+  // Récupération des variables.
+  $id = isset($query['id']) ? $query['id'] : '';
+  switch($method) {
+    case 'GET':
+        if ($id) {
+            $resultat = $ingredient->readIngredient($id);
+            return $resultat;
+        }
+        else {
+            $resultat = $ingredient->searchIngredients();
+            return $resultat;
+          }
+        break;
+        }
 }
 
 
