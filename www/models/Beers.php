@@ -19,7 +19,12 @@ class Beers
       throw new Exception($e->getMessage());
     }
   }
-
+    
+    /**
+     * searchBeers
+     *
+     * @return tableau de bière
+     */
     public function searchBeers() {
     try {
       $stmt = $this->connection->prepare("SELECT * FROM beers");
@@ -30,17 +35,27 @@ class Beers
       throw $e;
     }
   }
-    
+      
+  /**
+   * readBeer
+   *
+   * @param  mixed $id
+   * @return une biere
+   */
   public function readBeer($id) {
     try {
       $stmt = $this->connection->prepare("SELECT * FROM beers WHERE id=?");
       $stmt->execute([$id]);
       $beer = $stmt->fetch(PDO::FETCH_OBJ);
+      if($beer === false){
+        $beer = ["message" => "l'id n'existe pas."];
+      }
       return $beer;
     } catch(Exception $e) {
       throw $e;
+      };
     }
-  }
+  
 
     /**
      * createBeer
@@ -73,7 +88,33 @@ class Beers
       throw $e;
     }
   }
-
+  
+  /**
+   * addIngredient
+   *
+   * @param  mixed $beer_id
+   * @param  mixed $ingredient_id
+   * @return le tableau d'association
+   */
+  public function addIngredient($beer_id, $ingredient_id){
+    try{
+      
+      $sql = "INSERT INTO beer_ingredient (beer_id,ingredient_id) VALUES (?,?)";
+      $stmt = $this->connection->prepare($sql);
+      $stmt->execute(array($beer_id,$ingredient_id));
+      return $this->readBeer($id);
+    } catch (Exception $e) {
+      throw $e;
+    }
+  }
+  
+  /**
+   * updateBeer
+   *
+   * @param  mixed $array
+   * @param  mixed $id
+   * @return array beer
+   */
   public function updateBeer($array, $id)
   {
     try {
@@ -105,7 +146,7 @@ class Beers
       $sql = "DELETE FROM beers WHERE id=?";
       $stmt = $this->connection->prepare($sql);
       $stmt->execute(array($id));
-      return ['message' => "La bière $beer->name a été correctement supprimé"];
+      return $beer;
     } catch(Exception $e) {
       throw $e;
     }
