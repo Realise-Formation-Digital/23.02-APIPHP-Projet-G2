@@ -61,9 +61,6 @@ class Ingredients{
       foreach ($array as $ar) {
         array_push($tab, $ar);
       }
-
-     
-
       $sql = "UPDATE ingredients SET type=?,name=?,amount_value=?,amount_unit=?,amount_add=?, amount_attribute=? WHERE id=?";
       $stmt = $this->connection->prepare($sql);
       $stmt->execute(array($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $id));
