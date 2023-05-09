@@ -258,6 +258,8 @@ function manageIngredients()
   $method = $_SERVER['REQUEST_METHOD'];
   $body = json_decode(file_get_contents('php://input'), true);
   parse_str($_SERVER['QUERY_STRING'], $query);
+  $queryPerPage = isset($query['per_page']) ? $query['per_page'] : '';
+  $queryPage = isset($query['page']) ? $query['page'] : '';
   // Récupération des variables.
   $id = isset($query['id']) ? $query['id'] : '';
   switch ($method) {
@@ -267,7 +269,19 @@ function manageIngredients()
           $resultat = $ingredient->readIngredient($id);
           return $resultat;
         } else {
-          $resultat = $ingredient->searchIngredients();
+          if($queryPerPage){
+            $limit = $queryPerPage;
+            if($queryPage){
+              $offset = $queryPage;
+            }
+            else{
+              $offset = 0;
+            }
+          } else {
+            $limit = 50;
+            $offset = 0;
+          }
+          $resultat = $ingredient->searchIngredients($limit, $offset);
           return $resultat;
         }
       } catch (Error $e) {

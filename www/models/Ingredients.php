@@ -19,9 +19,14 @@ class Ingredients{
       }      
     }
 
-    public function searchIngredients(){
+    public function searchIngredients($limit, $offset){
       try {
-        $stmt = $this->connection->prepare("SELECT * FROM ingredients");
+        $stmt = $this->connection->prepare("SELECT * FROM ingredients
+                                                LIMIT $limit
+                                                OFFSET $offset");
+
+
+
         $stmt->execute();
         $beers = $stmt->fetchAll(PDO::FETCH_OBJ);
         return $beers;
