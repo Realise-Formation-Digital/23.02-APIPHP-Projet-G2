@@ -44,8 +44,9 @@ class Beers
    */
   public function readBeer($id) {
     try {
-      $stmt = $this->connection->prepare("SELECT * FROM beers WHERE id=?");
-      $stmt->execute([$id]);
+      $stmt = $this->connection->prepare("SELECT * FROM beers LEFT JOIN beer_ingredient ON beers.id = beer_ingredient.beer_id WHERE beers.id = :id");
+      $stmt->bindParam(':id', $id);
+      $stmt->execute();
       $beer = $stmt->fetch(PDO::FETCH_OBJ);
       if($beer === false){
         $beer = ["message" => "l'id n'existe pas."];
