@@ -46,7 +46,7 @@ class Beers
     try {
       $stmt = $this->connection->prepare("SELECT * FROM beers as b
                                           INNER JOIN beer_ingredient ON b.id = beer_ingredient.beer_id
-                                          INNER JOIN ingredients ON beer_ingredient.ingredient_id = ingredients.id
+                                          INNER JOIN ingredients as i ON beer_ingredient.ingredient_id = i.id
                                           WHERE b.id = :id");
       $stmt->execute(['id' => $id]);
       $beer = $stmt->fetchAll(PDO::FETCH_OBJ);

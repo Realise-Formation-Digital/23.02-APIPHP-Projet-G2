@@ -44,6 +44,7 @@ function manageBeers()
     case 'GET':
       if ($id) {
         $beerData = $beer->readBeer($id);
+        var_dump($beerData);
         $beerList = [];
         foreach($beerData as $beer){
           $beerId = $beer->beer_id;
