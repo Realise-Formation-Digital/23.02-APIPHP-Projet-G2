@@ -33,10 +33,7 @@ function manageBeers()
   $beer = new Beers();
   $method = $_SERVER['REQUEST_METHOD'];
   parse_str($_SERVER['QUERY_STRING'], $query);
-
-
   $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
   $body = json_decode(file_get_contents('php://input'), true);
   $beer_id = "";
   $ingredient_id = "";
@@ -44,9 +41,8 @@ function manageBeers()
   // Récupération des variables.
   $id = isset($query['id']) ? $query['id'] : '';
   $queryName = isset($query['name']) ? $query['name'] : '';
-
-
-
+  $queryPerPage = isset($query['per_page']) ? $query['per_page'] : '';
+  $queryPage = isset($query['page']) ? $query['page'] : '';
   switch ($method) {
     case 'GET':
       if ($queryName) {
@@ -119,7 +115,19 @@ function manageBeers()
 
         return $beerList;
       } else {
-        $beerData = $beer->searchBeers();
+        if($queryPerPage){
+          $queryLimit = $queryPerPage;
+          if($queryPage){
+            $queryOffset = $queryPage;
+          }
+          else{
+            $queryOffset = 0;
+          }
+        } else {
+          $queryLimit = 50;
+          $queryOffset = 0;
+        }
+        $beerData = $beer->searchBeers($queryLimit, $queryOffset);
         $beerList = [];
         foreach ($beerData as $beer) {
           $beerId = $beer->beer_id;
