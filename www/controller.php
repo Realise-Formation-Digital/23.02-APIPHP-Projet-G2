@@ -9,7 +9,6 @@ require_once './logic/checkBodyBeer.php';
 
 // Récupère les trycatchs des ingrédients 
 require_once "./logic/checkBodyIngredient.php";
-
 //récupère le chemin appelé
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -56,76 +55,129 @@ function manageBeers()
         return $resultat;
       }
       if ($id) {
-        $resultat = $beer->readBeer($id);
-        return $resultat;
-      } else {
-        $resultat = $beer->searchBeers();
-        return $resultat;
+        $beerData = $beer->readBeer($id);
+        $beerList = [];
+        foreach($beerData as $beer){
+          $beerId = $beer->beer_id;
+          if (!isset($beerList[$beerId])){
+            $beerList[$beerId] = [
+              "id" => $beer->beer_id,
+              "name" => $beer->name,
+              "tagline" => $beer->tagline,
+              "first_brewed" => $beer->first_brewed,
+              "description" => $beer->description,
+              "image_url" => $beer->image_url,
+              "ingredients" => [],
+              "brewers_tips" => $beer->brewers_tips,
+              "contributed_by" => $beer->contributed_by,
+              "food_pairing" => $beer->food_pairing,
+              "food_pairing2" => $beer->food_pairing2,
+              "food_pairing3" => $beer->food_pairing3
+            ];
+          }
+          $beerList[$beerId]['ingredients'][] = [
+              "id" => $beer->ingredient_id,
+              "name" => $beer->name_ing,
+              "type" => $beer->type,
+              "amount_value" => $beer->amount_value,
+              "amount_unit" => $beer->amount_unit,
+              "amount_add" => $beer->amount_add,
+              "amount_attribute" => $beer->amount_attribute,
+
+          ];
+        }
+       
+        return $beerList;
       }
-      break;
-    case 'POST':
-      try {
-          if(!isset($matches[1]) && !isset($matches[2])){
-          //methode permettant de controller les valeurs
-          $bodyOk = checkBodyBeer($body);
-          //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
-          $keys = array_keys($bodyOk);
-         
-          $valueToInsert = [];
-          foreach ($keys as $key) {
+        else{
+          $beerData = $beer->searchBeers();
+          $beerList = [];
+        foreach($beerData as $beer){
+          $beerId = $beer->beer_id;
+          if (!isset($beerList[$beerId])){
+            $beerList[$beerId] = [
+              "id" => $beer->beer_id,
+              "name" => $beer->name,
+              "tagline" => $beer->tagline,
+              "first_brewed" => $beer->first_brewed,
+              "description" => $beer->description,
+              "image_url" => $beer->image_url,
+              "ingredients" => [],
+              "brewers_tips" => $beer->brewers_tips,
+              "contributed_by" => $beer->contributed_by,
+              "food_pairing" => $beer->food_pairing,
+              "food_pairing2" => $beer->food_pairing2,
+              "food_pairing3" => $beer->food_pairing3
+            ];
+          }
+          $beerList[$beerId]['ingredients'][] = [
+              "id" => $beer->ingredient_id,
+              "name" => $beer->name_ing,
+              "type" => $beer->type,
+              "amount_value" => $beer->amount_value,
+              "amount_unit" => $beer->amount_unit,
+              "amount_add" => $beer->amount_add,
+              "amount_attribute" => $beer->amount_attribute,
+
+          ];
+        }
+
+          return $beerList;
+        }
+        break;
+        case 'POST':
+          try {
+            if(!isset($matches[1]) && !isset($matches[2])){
+              //methode permettant de controller les valeurs
+              $bodyOk = checkBodyBeer($body);
+              //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
+              $keys = array_keys($bodyOk);
+              
+              $valueToInsert = [];
+              foreach ($keys as $key) {
             if (in_array($key, ['name', 'tagline', 'first_brewed', 'description', 'image_url', 'brewers_tips', 'contributed_by', 'food_pairing'])) {
               $valueToInsert[$key] = $bodyOk[$key];
             }
           }
-            $resultat = $beer->createBeer($valueToInsert);
-            return $resultat;
+          $resultat = $beer->createBeer($valueToInsert);
+          return $resultat;
         }
         else {
-            $beer_id = $matches[1];
-            $ingredient_id = $matches[2];
-            $resultat = $beer->addIngredient($beer_id, $ingredient_id);
-            return $resultat;
-          }
-      }
-        catch (Error $e) {
-            throw $e;
-          }
-          break;
-    case 'PUT':
-    case 'PATCH':
-      try {
-        //methode permettant de controller les valeurs
-        $bodyOk = checkBodyBeer($body);
-        //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
-        $keys = array_keys($bodyOk);
-      } catch (Error $e) {
-        die($e);
-      }
-    case 'PUT':
-    case 'PATCH':
-      try {
-        $bodyOk = checkBodyBeer($body);
-        //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
-        $keys = array_keys($bodyOk);
-        $valueToInsert = [];
-        foreach ($keys as $key) {
-          if (in_array($key, ['name', 'tagline', 'first_brewed', 'description', 'image_url', 'brewers_tips', 'contributed_by', 'food_pairing'])) {
-            $valueToInsert[$key] = $body[$key];
-          }
+          $beer_id = $matches[1];
+          $ingredient_id = $matches[2];
+          $resultat = $beer->addIngredient($beer_id, $ingredient_id);
+          return $resultat;
         }
-        $resultat = $beer->updateBeer($valueToInsert, $id);
-        return $resultat;
-      } catch (Error $e) {
-        throw ($e);
+      }
+      catch (Error $e) {
+        throw $e;
       }
       break;
-    case 'DELETE':
-      $resultat = $beer->deleteBeer($id);
-      return $resultat;
-      break;
+    case 'PUT':
+    case 'PATCH':
+        try {
+          $bodyOk = checkBodyBeer($body);
+          //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
+          $keys = array_keys($bodyOk);
+          $valueToInsert = [];
+          foreach ($keys as $key) {
+            if (in_array($key, ['name', 'tagline', 'first_brewed', 'description', 'image_url', 'brewers_tips', 'contributed_by', 'food_pairing'])) {
+              $valueToInsert[$key] = $body[$key];
+            }
+          }
+          $resultat = $beer->updateBeer($valueToInsert, $id);
+          return $resultat;
+        } catch (Error $e) {
+          throw ($e);
+        }
+        break;
+      case 'DELETE':
+          $resultat = $beer->deleteBeer($id);
+          return $resultat;
+          break;
   }
 }
-
+            
 /**
  * manageIngredients
  *
@@ -164,7 +216,7 @@ function manageIngredients()
         $keys = array_keys($checkOk);
         $valueToInsert = [];
         foreach ($keys as $key) {
-          if (in_array($key, ['type', 'name', 'amount_value', 'amount_unit', 'amount_add', 'amount_attribute'])) {
+          if (in_array($key, ['type', 'name_ing', 'amount_value', 'amount_unit', 'amount_add', 'amount_attribute'])) {
             $valueToInsert[$key] = $checkOk[$key];
           }
         }
