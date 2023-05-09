@@ -25,11 +25,13 @@ class Beers
      *
      * @return tableau de bière
      */
-    public function searchBeers() {
+    public function searchBeers($limit, $offset) {
       try {
         $stmt = $this->connection->prepare("SELECT * FROM beers as b
                                             INNER JOIN beer_ingredient ON b.id = beer_ingredient.beer_id
-                                            INNER JOIN ingredients as i ON beer_ingredient.ingredient_id = i.id");
+                                            INNER JOIN ingredients as i ON beer_ingredient.ingredient_id = i.id
+                                            LIMIT $limit
+                                            OFFSET $offset");
         $stmt->execute();
         $beer = $stmt->fetchAll(PDO::FETCH_OBJ);
         if($beer === false){
