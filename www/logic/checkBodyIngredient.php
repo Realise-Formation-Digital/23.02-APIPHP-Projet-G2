@@ -10,11 +10,9 @@ function checkBodyIngredient($body)
   //Type
   if (!isset($body['type'])) {
     throw new Exception("Aucun type n'a été spécifié");
+    if (($body['type'] !== 'malt') && ($body['type'] !== 'hops')) {
+      throw new Exception("Seuls malt ou hops sont autorisés");}
   }
-  if (($body['type'] !== 'malt')  || ($body['type'] !== 'hops')) {
-    throw new Exception("Seuls malt ou hops sont autorisés");
-  }
-
   //Name
   if (!isset($body['name'])) {
     throw new Exception("Aucun mot n'a été spécifié");
@@ -24,9 +22,11 @@ function checkBodyIngredient($body)
   }
 
   //Amount value
+  var_dump($body);
   if (!isset($body['amount_unit'])) {
     throw new Exception("Aucune unité n'a été spécifiée");
   }
+  var_dump($body);
   if (!is_float($body['amount_value'])) {
     throw new Exception("La valeur doit êtres un nombres");
   }
