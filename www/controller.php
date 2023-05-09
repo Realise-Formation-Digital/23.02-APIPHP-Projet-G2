@@ -44,13 +44,17 @@ function manageBeers()
   // Récupération des variables.
   $id = isset($query['id']) ? $query['id'] : '';
   $queryName = isset($query['name']) ? $query['name'] : '';
-
+  $queryType = isset($query['type']) ? $query['type'] : '';
 
 
   switch ($method) {
     case 'GET':
-      if ($queryName) {
+      if (isset($query['name'])) {
         $beerData = $beer->readBeerName($queryName);
+      }
+        if (isset($query['type'])) {
+          $beerData = $beer->readBeerType($queryType);
+        }
         $beerList = [];
         foreach ($beerData as $beer) {
           $beerId = $beer->beer_id;
@@ -83,7 +87,7 @@ function manageBeers()
         }
 
         return $beerList;
-      }
+      
       if ($id) {
         $beerData = $beer->readBeer($id);
         $beerList = [];

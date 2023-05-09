@@ -72,6 +72,7 @@ class Beers
    */
   public function readBeerName($queryName) {
     try {
+
       $queryNameSQL = '%'. $queryName . '%';
       $stmt = $this->connection->prepare('SELECT * FROM beers as b
                                           INNER JOIN beer_ingredient ON b.id = beer_ingredient.beer_id
@@ -90,6 +91,28 @@ class Beers
       throw $e;
       };
     }
+
+    public function readBeerType($queryType) {
+      try {
+        
+        $queryNameSQL = '%'. $queryType . '%';
+        $stmt = $this->connection->prepare('SELECT * FROM beers as b
+                                            INNER JOIN beer_ingredient ON b.id = beer_ingredient.beer_id
+                                            INNER JOIN ingredients as i ON beer_ingredient.ingredient_id = i.id 
+                                            WHERE i.type 
+                                            LIKE :queryType');
+        $stmt->bindParam(':queryType', $queryNameSQL);
+        $stmt->execute();
+  
+        $beers = $stmt->fetchAll(PDO::FETCH_OBJ);
+        if(empty($beers)){
+          $beers = ["message" => "Aucunne bière contient du, $queryType"];
+        }
+        return $beers;
+      } catch(Exception $e) {
+        throw $e;
+        };
+      }
   
 
     /**
