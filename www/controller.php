@@ -34,15 +34,27 @@ function manageBeers()
   $beer = new Beers();
   $method = $_SERVER['REQUEST_METHOD'];
   parse_str($_SERVER['QUERY_STRING'], $query);
+  
+
   $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+  
   $body = json_decode(file_get_contents('php://input'), true);
   $beer_id = "";
   $ingredient_id = "";
   preg_match('/^\/beers\/(\d+)\/ingredients\/(\d+)$/', $uri, $matches);
   // Récupération des variables.
   $id = isset($query['id']) ? $query['id'] : '';
+  $queryName = isset($query['name']) ? $query['name'] :'';
+ 
+  
+  
   switch ($method) {
     case 'GET':
+      if ($queryName) {
+        $resultat = $beer->readBeerName($queryName);
+        
+        return $resultat;
+      }
       if ($id) {
         $resultat = $beer->readBeer($id);
         return $resultat;

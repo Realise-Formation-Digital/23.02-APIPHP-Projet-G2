@@ -56,6 +56,29 @@ class Beers
       throw $e;
       };
     }
+
+     /**
+   * readBeer
+   *
+   * @param  mixed $queryName (beerName)
+   * @return une biere
+   */
+  public function readBeerName($queryName) {
+    try {
+      $queryNameSQL = '%'. $queryName . '%';
+      $stmt = $this->connection->prepare('SELECT * FROM beers LEFT JOIN beer_ingredient ON beers.id = beer_ingredient.beer_id WHERE beers.name LIKE :queryName');
+      $stmt->bindParam(':queryName', $queryNameSQL);
+      $stmt->execute();
+
+      $beers = $stmt->fetchAll(PDO::FETCH_OBJ);
+      if(empty($beers)){
+        $beers = ["message" => "La bière, $queryName, n'existe pas."];
+      }
+      return $beers;
+    } catch(Exception $e) {
+      throw $e;
+      };
+    }
   
 
     /**
