@@ -36,8 +36,6 @@ class Beers
     }
   }
 
-
-      
   /**
    * readBeer
    *
