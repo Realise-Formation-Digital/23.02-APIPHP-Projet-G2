@@ -6,6 +6,7 @@ services:
     image: mariadb:latest # version de l'image mysql
     volumes:
       - ./data_db:/var/lib/mariadb # où seront stockée les données en local
+      - ./db:/docker-entrypoint-initdb.d # ajout automatique à la DB des fichiers du dossier db
     environment:
         MYSQL_ROOT_PASSWORD: beers # mot de passe root
         MYSQL_DATABASE: beers_db # le nom de la db  
