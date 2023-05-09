@@ -26,14 +26,19 @@ class Beers
      * @return tableau de bière
      */
     public function searchBeers() {
-    try {
-      $stmt = $this->connection->prepare("SELECT * FROM beers");
-      $stmt->execute();
-      $beers = $stmt->fetchAll(PDO::FETCH_OBJ);
-      return $beers;
-    } catch(Exception $e) {
-      throw $e;
-    }
+      try {
+        $stmt = $this->connection->prepare("SELECT * FROM beers as b
+                                            INNER JOIN beer_ingredient ON b.id = beer_ingredient.beer_id
+                                            INNER JOIN ingredients as i ON beer_ingredient.ingredient_id = i.id");
+        $stmt->execute();
+        $beer = $stmt->fetchAll(PDO::FETCH_OBJ);
+        if($beer === false){
+          $beer = ["message" => "l'id n'existe pas."];
+        }
+        return $beer;
+      } catch(Exception $e) {
+        throw $e;
+        };
   }
 
   /**
