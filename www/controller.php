@@ -75,10 +75,12 @@ function manageBeers()
             $ingredient_id = $matches[2];
             $resultat = $beer->addIngredient($beer_id, $ingredient_id);
             return $resultat;
-          } catch (Error $e) {
-            throw $e;
           }
-      break;
+          catch (Error $e) {
+            throw $e;
+          }}
+          break;
+        }
     case 'PUT':
     case 'PATCH':
       try {
