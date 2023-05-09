@@ -65,7 +65,7 @@ class Beers
     }
 
      /**
-   * readBeer
+   * readBeerName
    *
    * @param  mixed $queryName (beerName)
    * @return une biere
@@ -73,7 +73,11 @@ class Beers
   public function readBeerName($queryName) {
     try {
       $queryNameSQL = '%'. $queryName . '%';
-      $stmt = $this->connection->prepare('SELECT * FROM beers LEFT JOIN beer_ingredient ON beers.id = beer_ingredient.beer_id WHERE beers.name LIKE :queryName');
+      $stmt = $this->connection->prepare('SELECT * FROM beers as b
+                                          INNER JOIN beer_ingredient ON b.id = beer_ingredient.beer_id
+                                          INNER JOIN ingredients as i ON beer_ingredient.ingredient_id = i.id 
+                                          WHERE b.name 
+                                          LIKE :queryName');
       $stmt->bindParam(':queryName', $queryNameSQL);
       $stmt->execute();
 

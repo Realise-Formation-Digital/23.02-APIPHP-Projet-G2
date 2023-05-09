@@ -33,33 +33,63 @@ function manageBeers()
   $beer = new Beers();
   $method = $_SERVER['REQUEST_METHOD'];
   parse_str($_SERVER['QUERY_STRING'], $query);
-  
+
 
   $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-  
+
   $body = json_decode(file_get_contents('php://input'), true);
   $beer_id = "";
   $ingredient_id = "";
   preg_match('/^\/beers\/(\d+)\/ingredients\/(\d+)$/', $uri, $matches);
   // Récupération des variables.
   $id = isset($query['id']) ? $query['id'] : '';
-  $queryName = isset($query['name']) ? $query['name'] :'';
- 
-  
-  
+  $queryName = isset($query['name']) ? $query['name'] : '';
+
+
+
   switch ($method) {
     case 'GET':
       if ($queryName) {
-        $resultat = $beer->readBeerName($queryName);
-        
-        return $resultat;
+        $beerData = $beer->readBeerName($queryName);
+        $beerList = [];
+        foreach ($beerData as $beer) {
+          $beerId = $beer->beer_id;
+          if (!isset($beerList[$beerId])) {
+            $beerList[$beerId] = [
+              "id" => $beer->beer_id,
+              "name" => $beer->name,
+              "tagline" => $beer->tagline,
+              "first_brewed" => $beer->first_brewed,
+              "description" => $beer->description,
+              "image_url" => $beer->image_url,
+              "ingredients" => [],
+              "brewers_tips" => $beer->brewers_tips,
+              "contributed_by" => $beer->contributed_by,
+              "food_pairing" => $beer->food_pairing,
+              "food_pairing2" => $beer->food_pairing2,
+              "food_pairing3" => $beer->food_pairing3
+            ];
+          }
+          $beerList[$beerId]['ingredients'][] = [
+            "id" => $beer->ingredient_id,
+            "name" => $beer->name_ing,
+            "type" => $beer->type,
+            "amount_value" => $beer->amount_value,
+            "amount_unit" => $beer->amount_unit,
+            "amount_add" => $beer->amount_add,
+            "amount_attribute" => $beer->amount_attribute,
+
+          ];
+        }
+
+        return $beerList;
       }
       if ($id) {
         $beerData = $beer->readBeer($id);
         $beerList = [];
-        foreach($beerData as $beer){
+        foreach ($beerData as $beer) {
           $beerId = $beer->beer_id;
-          if (!isset($beerList[$beerId])){
+          if (!isset($beerList[$beerId])) {
             $beerList[$beerId] = [
               "id" => $beer->beer_id,
               "name" => $beer->name,
@@ -76,112 +106,109 @@ function manageBeers()
             ];
           }
           $beerList[$beerId]['ingredients'][] = [
-              "id" => $beer->ingredient_id,
-              "name" => $beer->name_ing,
-              "type" => $beer->type,
-              "amount_value" => $beer->amount_value,
-              "amount_unit" => $beer->amount_unit,
-              "amount_add" => $beer->amount_add,
-              "amount_attribute" => $beer->amount_attribute,
+            "id" => $beer->ingredient_id,
+            "name" => $beer->name_ing,
+            "type" => $beer->type,
+            "amount_value" => $beer->amount_value,
+            "amount_unit" => $beer->amount_unit,
+            "amount_add" => $beer->amount_add,
+            "amount_attribute" => $beer->amount_attribute,
 
           ];
         }
-       
+
+        return $beerList;
+      } else {
+        $beerData = $beer->searchBeers();
+        $beerList = [];
+        foreach ($beerData as $beer) {
+          $beerId = $beer->beer_id;
+          if (!isset($beerList[$beerId])) {
+            $beerList[$beerId] = [
+              "id" => $beer->beer_id,
+              "name" => $beer->name,
+              "tagline" => $beer->tagline,
+              "first_brewed" => $beer->first_brewed,
+              "description" => $beer->description,
+              "image_url" => $beer->image_url,
+              "ingredients" => [],
+              "brewers_tips" => $beer->brewers_tips,
+              "contributed_by" => $beer->contributed_by,
+              "food_pairing" => $beer->food_pairing,
+              "food_pairing2" => $beer->food_pairing2,
+              "food_pairing3" => $beer->food_pairing3
+            ];
+          }
+          $beerList[$beerId]['ingredients'][] = [
+            "id" => $beer->ingredient_id,
+            "name" => $beer->name_ing,
+            "type" => $beer->type,
+            "amount_value" => $beer->amount_value,
+            "amount_unit" => $beer->amount_unit,
+            "amount_add" => $beer->amount_add,
+            "amount_attribute" => $beer->amount_attribute,
+
+          ];
+        }
+
         return $beerList;
       }
-        else{
-          $beerData = $beer->searchBeers();
-          $beerList = [];
-        foreach($beerData as $beer){
-          $beerId = $beer->beer_id;
-          if (!isset($beerList[$beerId])){
-            $beerList[$beerId] = [
-              "id" => $beer->beer_id,
-              "name" => $beer->name,
-              "tagline" => $beer->tagline,
-              "first_brewed" => $beer->first_brewed,
-              "description" => $beer->description,
-              "image_url" => $beer->image_url,
-              "ingredients" => [],
-              "brewers_tips" => $beer->brewers_tips,
-              "contributed_by" => $beer->contributed_by,
-              "food_pairing" => $beer->food_pairing,
-              "food_pairing2" => $beer->food_pairing2,
-              "food_pairing3" => $beer->food_pairing3
-            ];
-          }
-          $beerList[$beerId]['ingredients'][] = [
-              "id" => $beer->ingredient_id,
-              "name" => $beer->name_ing,
-              "type" => $beer->type,
-              "amount_value" => $beer->amount_value,
-              "amount_unit" => $beer->amount_unit,
-              "amount_add" => $beer->amount_add,
-              "amount_attribute" => $beer->amount_attribute,
+      break;
+    case 'POST':
+      try {
+        if (!isset($matches[1]) && !isset($matches[2])) {
+          //methode permettant de controller les valeurs
+          $bodyOk = checkBodyBeer($body);
+          //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
+          $keys = array_keys($bodyOk);
 
-          ];
-        }
-
-          return $beerList;
-        }
-        break;
-        case 'POST':
-          try {
-            if(!isset($matches[1]) && !isset($matches[2])){
-              //methode permettant de controller les valeurs
-              $bodyOk = checkBodyBeer($body);
-              //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
-              $keys = array_keys($bodyOk);
-              
-              $valueToInsert = [];
-              foreach ($keys as $key) {
+          $valueToInsert = [];
+          foreach ($keys as $key) {
             if (in_array($key, ['name', 'tagline', 'first_brewed', 'description', 'image_url', 'brewers_tips', 'contributed_by', 'food_pairing'])) {
               $valueToInsert[$key] = $bodyOk[$key];
             }
           }
           $resultat = $beer->createBeer($valueToInsert);
           return $resultat;
-        }
-        else {
+        } else {
           $beer_id = $matches[1];
           $ingredient_id = $matches[2];
           $resultat = $beer->addIngredient($beer_id, $ingredient_id);
           return $resultat;
         }
-      }
-      catch (Error $e) {
+      } catch (Error $e) {
         throw $e;
       }
       break;
     case 'PUT':
     case 'PATCH':
-        try {
-          $bodyOk = checkBodyBeer($body);
-          //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
-          $keys = array_keys($bodyOk);
-          $valueToInsert = [];
-          foreach ($keys as $key) {
-            if (in_array($key, ['name', 'tagline', 'first_brewed', 'description', 'image_url', 'brewers_tips', 'contributed_by', 'food_pairing'])) {
-              $valueToInsert[$key] = $body[$key];
-            }
+      try {
+        $bodyOk = checkBodyBeer($body);
+        //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
+        $keys = array_keys($bodyOk);
+        $valueToInsert = [];
+        foreach ($keys as $key) {
+          if (in_array($key, ['name', 'tagline', 'first_brewed', 'description', 'image_url', 'brewers_tips', 'contributed_by', 'food_pairing'])) {
+            $valueToInsert[$key] = $body[$key];
           }
-          $resultat = $beer->updateBeer($valueToInsert, $id);
-          return $resultat;
-        } catch (Error $e) {
-          throw ($e);
         }
-        break;
-      case 'DELETE':
-          $resultat = $beer->deleteBeer($id);
-          return $resultat;
-          break;
+        $resultat = $beer->updateBeer($valueToInsert, $id);
+        return $resultat;
+      } catch (Error $e) {
+        throw ($e);
+      }
+      break;
+    case 'DELETE':
+      $resultat = $beer->deleteBeer($id);
+      return $resultat;
+      break;
   }
 }
-            
+
 /**
  * manageIngredients
  *
- * @return void
+ * @return tableau d'ingredients
  */
 function manageIngredients()
 {
@@ -193,7 +220,7 @@ function manageIngredients()
   $id = isset($query['id']) ? $query['id'] : '';
   switch ($method) {
     case 'GET':
-      try{
+      try {
         if ($id) {
           $resultat = $ingredient->readIngredient($id);
           return $resultat;
@@ -201,8 +228,7 @@ function manageIngredients()
           $resultat = $ingredient->searchIngredients();
           return $resultat;
         }
-      }
-      catch(Error $e){
+      } catch (Error $e) {
         throw $e;
       }
       break;
@@ -234,7 +260,7 @@ function manageIngredients()
         $keys = array_keys($body);
         $valueToInsert = [];
         foreach ($keys as $key) {
-          if (in_array($key, ['type', 'name', 'amount_value', 'amount_unit', 'amount_add', 'amount_attribute'])) {
+          if (in_array($key, ['type', 'name_ing', 'amount_value', 'amount_unit', 'amount_add', 'amount_attribute'])) {
             $valueToInsert[$key] = $body[$key];
           }
         }
@@ -242,7 +268,7 @@ function manageIngredients()
         return $resultat;
         break;
       } catch (Error $e) {
-        throw($e);
+        throw ($e);
       }
       break;
   }
