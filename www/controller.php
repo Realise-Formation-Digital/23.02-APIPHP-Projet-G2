@@ -70,17 +70,16 @@ function manageBeers()
             return $resultat;
         }
         else {
-          try {
             $beer_id = $matches[1];
             $ingredient_id = $matches[2];
             $resultat = $beer->addIngredient($beer_id, $ingredient_id);
             return $resultat;
           }
-          catch (Error $e) {
+      }
+        catch (Error $e) {
             throw $e;
-          }}
+          }
           break;
-        }
     case 'PUT':
     case 'PATCH':
       try {
