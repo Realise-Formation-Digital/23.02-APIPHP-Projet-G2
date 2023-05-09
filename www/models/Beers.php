@@ -76,7 +76,6 @@ class Beers
       foreach($tab[5] as $t){
         array_push($tabFood,$t);
       }
-
       //implode — Rassemble les éléments d'un tableau en une chaîne
       //Les cles du tableau sont les noms de colonnes
       $keys = implode(", ", array_keys($array));
@@ -103,7 +102,7 @@ class Beers
       $sql = "INSERT INTO beer_ingredient (beer_id,ingredient_id) VALUES (?,?)";
       $stmt = $this->connection->prepare($sql);
       $stmt->execute(array($beer_id,$ingredient_id));
-      return $this->readBeer($id);
+      return $this->readBeer($beer_id);
     } catch (Exception $e) {
       throw $e;
     }
