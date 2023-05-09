@@ -44,8 +44,9 @@ class Beers
    */
   public function readBeer($id) {
     try {
-      $stmt = $this->connection->prepare("SELECT * FROM beers WHERE id=?");
-      $stmt->execute([$id]);
+      $stmt = $this->connection->prepare("SELECT * FROM beers LEFT JOIN beer_ingredient ON beers.id = beer_ingredient.beer_id WHERE beers.id = :id");
+      $stmt->bindParam(':id', $id);
+      $stmt->execute();
       $beer = $stmt->fetch(PDO::FETCH_OBJ);
       if($beer === false){
         $beer = ["message" => "l'id n'existe pas."];
@@ -75,7 +76,6 @@ class Beers
       foreach($tab[5] as $t){
         array_push($tabFood,$t);
       }
-
       //implode — Rassemble les éléments d'un tableau en une chaîne
       //Les cles du tableau sont les noms de colonnes
       $keys = implode(", ", array_keys($array));
@@ -102,7 +102,7 @@ class Beers
       $sql = "INSERT INTO beer_ingredient (beer_id,ingredient_id) VALUES (?,?)";
       $stmt = $this->connection->prepare($sql);
       $stmt->execute(array($beer_id,$ingredient_id));
-      return $this->readBeer($id);
+      return $this->readBeer($beer_id);
     } catch (Exception $e) {
       throw $e;
     }
