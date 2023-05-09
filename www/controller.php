@@ -44,13 +44,13 @@ function manageBeers()
     case 'GET':
       if ($id) {
         $beerData = $beer->readBeer($id);
-        var_dump($beerData);
         $beerList = [];
         foreach($beerData as $beer){
           $beerId = $beer->beer_id;
           if (!isset($beerList[$beerId])){
             $beerList[$beerId] = [
               "id" => $beer->beer_id,
+              "name" => $beer->name,
               "tagline" => $beer->tagline,
               "first_brewed" => $beer->first_brewed,
               "description" => $beer->description,
@@ -65,7 +65,7 @@ function manageBeers()
           }
           $beerList[$beerId]['ingredients'][] = [
               "id" => $beer->ingredient_id,
-              "name" => $beer->name,
+              "name" => $beer->name_ing,
               "type" => $beer->type,
               "amount_value" => $beer->amount_value,
               "amount_unit" => $beer->amount_unit,
@@ -110,16 +110,6 @@ function manageBeers()
         throw $e;
       }
       break;
-      case 'PUT':
-        case 'PATCH':
-          try {
-            //methode permettant de controller les valeurs
-            $bodyOk = checkBodyBeer($body);
-            //creer le tableau avec les bonnes valeurs à insérer en fonction ds clés.
-            $keys = array_keys($bodyOk);
-          } catch (Error $e) {
-            die($e);
-          }
     case 'PUT':
     case 'PATCH':
         try {
@@ -183,7 +173,7 @@ function manageIngredients()
         $keys = array_keys($checkOk);
         $valueToInsert = [];
         foreach ($keys as $key) {
-          if (in_array($key, ['type', 'name', 'amount_value', 'amount_unit', 'amount_add', 'amount_attribute'])) {
+          if (in_array($key, ['type', 'name_ing', 'amount_value', 'amount_unit', 'amount_add', 'amount_attribute'])) {
             $valueToInsert[$key] = $checkOk[$key];
           }
         }

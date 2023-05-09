@@ -37,7 +37,7 @@ class Ingredients{
         $keys = implode(", ", array_keys($array));
         $sql = "INSERT INTO ingredients ($keys) VALUES (?,?,?,?,?,?)";
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute(array($array['type'], $array['name'], $array['amount_value'], $array['amount_unit'], $array['amount_add'], $array['amount_attribute']));
+        $stmt->execute(array($array['type'], $array['name_ing'], $array['amount_value'], $array['amount_unit'], $array['amount_add'], $array['amount_attribute']));
         $id = $this->connection->lastInsertId();
         return $this->readIngredient($id);
       } catch (Exception $e) {
@@ -64,7 +64,7 @@ class Ingredients{
       foreach ($array as $ar) {
         array_push($tab, $ar);
       }
-      $sql = "UPDATE ingredients SET type=?,name=?,amount_value=?,amount_unit=?,amount_add=?, amount_attribute=? WHERE id=?";
+      $sql = "UPDATE ingredients SET type=?,name_ing=?,amount_value=?,amount_unit=?,amount_add=?, amount_attribute=? WHERE id=?";
       $stmt = $this->connection->prepare($sql);
       $stmt->execute(array($tab[0], $tab[1], $tab[2], $tab[3], $tab[4], $tab[5], $id));
       return $this->readIngredient($id);
@@ -79,7 +79,7 @@ class Ingredients{
         $sql = "DELETE FROM ingredients WHERE id=?";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute(array($id));
-        return ['message' => "L'ingrédient $ingredient->name a été correctement supprimé"];
+        return ['message' => "L'ingrédient $ingredient->name_ing a été correctement supprimé"];
       } catch(Exception $e) {
         throw $e;
       }

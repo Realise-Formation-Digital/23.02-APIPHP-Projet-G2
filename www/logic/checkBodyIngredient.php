@@ -14,10 +14,10 @@ function checkBodyIngredient($body)
       throw new Exception("Seuls malt ou hops sont autorisés");}
   }
   //Name
-  if (!isset($body['name'])) {
+  if (!isset($body['name_ing'])) {
     throw new Exception("Aucun mot n'a été spécifié");
   }
-  if (strlen($body['name']) > 50) {
+  if (strlen($body['name_ing']) > 50) {
     throw new Exception("Le nom ne peut pas contenir plus de 50 caractères");
   }
 
