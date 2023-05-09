@@ -22,15 +22,14 @@ function checkBodyIngredient($body)
   }
 
   //Amount value
-  var_dump($body);
   if (!isset($body['amount_unit'])) {
     throw new Exception("Aucune unité n'a été spécifiée");
   }
-  var_dump($body);
-  if (!is_float($body['amount_value'])) {
+
+  if (!is_numeric($body['amount_value'])) {
     throw new Exception("La valeur doit êtres un nombres");
   }
-  if (filter_var($body['amount_value'], FILTER_VALIDATE_FLOAT, array('options' => array('min_range' => 1, 'max_range' => 255)))) {
+  if (strlen($body['amount_value']) > 12) {
     throw new Exception('Il faut entre 1 et 255 caractères dans la valeur');
   }
 
@@ -51,4 +50,5 @@ function checkBodyIngredient($body)
   if (strlen($body['amount_attribute']) > 15) {
     throw new Exception("Ne dois pas dépasser 15 caractères");
   }
+  return $body;
 }

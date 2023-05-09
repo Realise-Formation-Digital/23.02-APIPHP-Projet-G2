@@ -22,7 +22,6 @@ if (preg_match('#^/beers#', $uri)) {
   $res = manageIngredients();
 }
 header('Content-Type:application/json;charset=utf-8');
-
 echo (json_encode($res));
 
 /**
@@ -124,6 +123,7 @@ function manageIngredients()
 {
   $ingredient = new Ingredients();
   $method = $_SERVER['REQUEST_METHOD'];
+  $body = json_decode(file_get_contents('php://input'), true);
   parse_str($_SERVER['QUERY_STRING'], $query);
   // Récupération des variables.
   $id = isset($query['id']) ? $query['id'] : '';
@@ -148,13 +148,12 @@ function manageIngredients()
       break;
     case 'POST':
       try {
-        $body = json_decode(file_get_contents('php://input'), true);
         $checkOk = checkBodyIngredient($body);
-        $keys = array_keys($body);
+        $keys = array_keys($checkOk);
         $valueToInsert = [];
         foreach ($keys as $key) {
           if (in_array($key, ['type', 'name', 'amount_value', 'amount_unit', 'amount_add', 'amount_attribute'])) {
-            $valueToInsert[$key] = $body[$key];
+            $valueToInsert[$key] = $checkOk[$key];
           }
         }
         $resultat = $ingredient->createIngredient($valueToInsert);

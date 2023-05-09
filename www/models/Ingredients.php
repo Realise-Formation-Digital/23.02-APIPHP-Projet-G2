@@ -32,10 +32,12 @@ class Ingredients{
 
     public function createIngredient($array){
       try{
-
-        $sql = "INSERT INTO ingredients (type,name,amount_value,amount_unit,amount_add,amount_attribute) VALUES (?,?,?,?,?,?)";
+        //implode — Rassemble les éléments d'un tableau en une chaîne
+        //Les cles du tableau sont les noms de colonnes
+        $keys = implode(", ", array_keys($array));
+        $sql = "INSERT INTO ingredients ($keys) VALUES (?,?,?,?,?,?)";
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute(array($array[0], $array[1], $array[2], $array[3], $array[4], $array[5]));
+        $stmt->execute(array($array['type'], $array['name'], $array['amount_value'], $array['amount_unit'], $array['amount_add'], $array['amount_attribute']));
         $id = $this->connection->lastInsertId();
         return $this->readIngredient($id);
       } catch (Exception $e) {
@@ -47,8 +49,8 @@ class Ingredients{
       try {
         $stmt = $this->connection->prepare("SELECT * FROM ingredients WHERE id=?");
         $stmt->execute([$id]);
-        $beer = $stmt->fetch(PDO::FETCH_OBJ);
-        return $beer;
+        $ingredient = $stmt->fetch(PDO::FETCH_OBJ);
+        return $ingredient;
       } catch(Exception $e) {
         throw $e;
       }
