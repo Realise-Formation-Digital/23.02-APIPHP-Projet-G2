@@ -57,7 +57,7 @@ CREATE TABLE `beer_ingredient` (
 CREATE TABLE `ingredients` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
   `type` enum('malt','hops') NOT NULL,
-  `name` varchar(50) NOT NULL,
+  `name_ing` varchar(50) NOT NULL,
   `amount_value` float(255,1) NOT NULL,
   `amount_unit` varchar(15) NOT NULL,
   `amount_add` varchar(15) DEFAULT NULL,
