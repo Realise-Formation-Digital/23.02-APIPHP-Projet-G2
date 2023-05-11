@@ -1,4 +1,9 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 // Récupération des Models
 require_once __DIR__ . "/models/Beers.php";
 require_once __DIR__ . "/models/Ingredients.php";
@@ -20,7 +25,7 @@ if (preg_match('#^/beers#', $uri)) {
 } else {
   $res = manageIngredients();
 }
-header('Content-Type:application/json;charset=utf-8');
+
 echo (json_encode($res));
 
 /**
@@ -117,38 +122,43 @@ function manageBeers()
       }
       elseif($id){
         $beerData = $beer->readBeer($id);
-        $beerList = [];
-        foreach ($beerData as $beer) {
-          $beerId = $beer->beer_id;
-          if (!isset($beerList[$beerId])) {
-            $beerList[$beerId] = [
-              "id" => $beer->beer_id,
-              "name" => $beer->name,
-              "tagline" => $beer->tagline,
-              "first_brewed" => $beer->first_brewed,
-              "description" => $beer->description,
-              "image_url" => $beer->image_url,
-              "ingredients" => [],
-              "brewers_tips" => $beer->brewers_tips,
-              "contributed_by" => $beer->contributed_by,
-              "food_pairing" => $beer->food_pairing,
-              "food_pairing2" => $beer->food_pairing2,
-              "food_pairing3" => $beer->food_pairing3
+        if(count($beerData) == 1){
+          return $beerData;
+        }
+        else{
+
+          $beerList = [];
+          foreach ($beerData as $beer) {
+            $beerId = $beer->beer_id;
+            if (!isset($beerList[$beerId])) {
+              $beerList[$beerId] = [
+                "id" => $beer->beer_id,
+                "name" => $beer->name,
+                "tagline" => $beer->tagline,
+                "first_brewed" => $beer->first_brewed,
+                "description" => $beer->description,
+                "image_url" => $beer->image_url,
+                "ingredients" => [],
+                "brewers_tips" => $beer->brewers_tips,
+                "contributed_by" => $beer->contributed_by,
+                "food_pairing" => $beer->food_pairing,
+                "food_pairing2" => $beer->food_pairing2,
+                "food_pairing3" => $beer->food_pairing3
+              ];
+            }
+            $beerList[$beerId]['ingredients'][] = [
+              "id" => $beer->ingredient_id,
+              "name" => $beer->name_ing,
+              "type" => $beer->type,
+              "amount_value" => $beer->amount_value,
+              "amount_unit" => $beer->amount_unit,
+              "amount_add" => $beer->amount_add,
+              "amount_attribute" => $beer->amount_attribute,
+              
             ];
           }
-          $beerList[$beerId]['ingredients'][] = [
-            "id" => $beer->ingredient_id,
-            "name" => $beer->name_ing,
-            "type" => $beer->type,
-            "amount_value" => $beer->amount_value,
-            "amount_unit" => $beer->amount_unit,
-            "amount_add" => $beer->amount_add,
-            "amount_attribute" => $beer->amount_attribute,
-
-          ];
+          return $beerList;
         }
-
-        return $beerList;
       } else {
         if ($queryPerPage) {
           $queryLimit = $queryPerPage;
