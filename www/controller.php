@@ -1,4 +1,9 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 // Récupération des Models
 require_once __DIR__ . "/models/Beers.php";
 require_once __DIR__ . "/models/Ingredients.php";
@@ -20,7 +25,7 @@ if (preg_match('#^/beers#', $uri)) {
 } else {
   $res = manageIngredients();
 }
-header('Content-Type:application/json;charset=utf-8');
+
 echo (json_encode($res));
 
 /**
