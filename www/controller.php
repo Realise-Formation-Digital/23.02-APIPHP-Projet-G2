@@ -9,9 +9,9 @@ require_once __DIR__ . "/models/Beers.php";
 require_once __DIR__ . "/models/Ingredients.php";
 // Récupération des constantes d'accès pour la base de données
 require_once "./config.php";
-// Récuparation des fonctions check Body
+// Récuparation des fonctions check Body et deserialisation
 require_once './logic/checkBodyBeer.php';
-
+require_once './logic/deserializedBeer.php';
 // Récupère les trycatchs des ingrédients 
 require_once "./logic/checkBodyIngredient.php";
 //récupère le chemin appelé
@@ -53,112 +53,21 @@ function manageBeers()
     case 'GET':
       if ($queryName) {
         $beerData = $beer->readBeerName($queryName);
-        $beerList = [];
-        foreach ($beerData as $beer) {
-          $beerId = $beer->beer_id;
-          if (!isset($beerList[$beerId])) {
-            $beerList[$beerId] = [
-              "id" => $beer->beer_id,
-              "name" => $beer->name,
-              "tagline" => $beer->tagline,
-              "first_brewed" => $beer->first_brewed,
-              "description" => $beer->description,
-              "image_url" => $beer->image_url,
-              "ingredients" => [],
-              "brewers_tips" => $beer->brewers_tips,
-              "contributed_by" => $beer->contributed_by,
-              "food_pairing" => $beer->food_pairing,
-              "food_pairing2" => $beer->food_pairing2,
-              "food_pairing3" => $beer->food_pairing3
-            ];
-          }
-          $beerList[$beerId]['ingredients'][] = [
-            "id" => $beer->ingredient_id,
-            "name" => $beer->name_ing,
-            "type" => $beer->type,
-            "amount_value" => $beer->amount_value,
-            "amount_unit" => $beer->amount_unit,
-            "amount_add" => $beer->amount_add,
-            "amount_attribute" => $beer->amount_attribute,
+        $beersTab = deserialized($beerData);
 
-          ];
-        }
-        return $beerList;
+        return $beersTab;
       }
       elseif ($queryType) {
         $beerData = $beer->readBeerType($queryType);
-        $beerList = [];
-        foreach ($beerData as $beer) {
-          $beerId = $beer->beer_id;
-          if (!isset($beerList[$beerId])) {
-            $beerList[$beerId] = [
-              "id" => $beer->beer_id,
-              "name" => $beer->name,
-              "tagline" => $beer->tagline,
-              "first_brewed" => $beer->first_brewed,
-              "description" => $beer->description,
-              "image_url" => $beer->image_url,
-              "ingredients" => [],
-              "brewers_tips" => $beer->brewers_tips,
-              "contributed_by" => $beer->contributed_by,
-              "food_pairing" => $beer->food_pairing,
-              "food_pairing2" => $beer->food_pairing2,
-              "food_pairing3" => $beer->food_pairing3
-            ];
-          }
-          $beerList[$beerId]['ingredients'][] = [
-            "id" => $beer->ingredient_id,
-            "name" => $beer->name_ing,
-            "type" => $beer->type,
-            "amount_value" => $beer->amount_value,
-            "amount_unit" => $beer->amount_unit,
-            "amount_add" => $beer->amount_add,
-            "amount_attribute" => $beer->amount_attribute,
+        $beersTab = deserialized($beerData);
 
-          ];
-        }
-
-        return $beerList;
+        return $beersTab;
       }
       elseif($id){
         $beerData = $beer->readBeer($id);
-        if(count($beerData) == 1){
-          return $beerData;
-        }
-        else{
+        $beersTab = deserialized($beerData);
 
-          $beerList = [];
-          foreach ($beerData as $beer) {
-            $beerId = $beer->beer_id;
-            if (!isset($beerList[$beerId])) {
-              $beerList[$beerId] = [
-                "id" => $beer->beer_id,
-                "name" => $beer->name,
-                "tagline" => $beer->tagline,
-                "first_brewed" => $beer->first_brewed,
-                "description" => $beer->description,
-                "image_url" => $beer->image_url,
-                "ingredients" => [],
-                "brewers_tips" => $beer->brewers_tips,
-                "contributed_by" => $beer->contributed_by,
-                "food_pairing" => $beer->food_pairing,
-                "food_pairing2" => $beer->food_pairing2,
-                "food_pairing3" => $beer->food_pairing3
-              ];
-            }
-            $beerList[$beerId]['ingredients'][] = [
-              "id" => $beer->ingredient_id,
-              "name" => $beer->name_ing,
-              "type" => $beer->type,
-              "amount_value" => $beer->amount_value,
-              "amount_unit" => $beer->amount_unit,
-              "amount_add" => $beer->amount_add,
-              "amount_attribute" => $beer->amount_attribute,
-              
-            ];
-          }
-          return $beerList;
-        }
+        return $beersTab;
       } else {
         if ($queryPerPage) {
           $queryLimit = $queryPerPage;
@@ -172,38 +81,9 @@ function manageBeers()
           $queryOffset = 0;
         }
         $beerData = $beer->searchBeers($queryLimit, $queryOffset);
-        $beerList = [];
-        foreach ($beerData as $beer) {
-          $beerId = $beer->beer_id;
-          if (!isset($beerList[$beerId])) {
-            $beerList[$beerId] = [
-              "id" => $beer->beer_id,
-              "name" => $beer->name,
-              "tagline" => $beer->tagline,
-              "first_brewed" => $beer->first_brewed,
-              "description" => $beer->description,
-              "image_url" => $beer->image_url,
-              "ingredients" => [],
-              "brewers_tips" => $beer->brewers_tips,
-              "contributed_by" => $beer->contributed_by,
-              "food_pairing" => $beer->food_pairing,
-              "food_pairing2" => $beer->food_pairing2,
-              "food_pairing3" => $beer->food_pairing3
-            ];
-          }
-          $beerList[$beerId]['ingredients'][] = [
-            "id" => $beer->ingredient_id,
-            "name" => $beer->name_ing,
-            "type" => $beer->type,
-            "amount_value" => $beer->amount_value,
-            "amount_unit" => $beer->amount_unit,
-            "amount_add" => $beer->amount_add,
-            "amount_attribute" => $beer->amount_attribute,
+        $beersTab = deserialized($beerData);
 
-          ];
-        }
-
-        return $beerList;
+        return $beersTab;
       }
       break;
     case 'POST':
