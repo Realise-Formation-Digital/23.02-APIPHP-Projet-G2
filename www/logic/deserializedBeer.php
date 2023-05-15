@@ -7,6 +7,8 @@
  * @return array
  */
 function deserialized($beerData){
+  try{
+
     $beerList = [];
     foreach ($beerData as $beer) {
       $beerId = $beer->beer_id;
@@ -34,13 +36,17 @@ function deserialized($beerData){
         "amount_unit" => $beer->amount_unit,
         "amount_add" => $beer->amount_add,
         "amount_attribute" => $beer->amount_attribute,
-
+        
       ];
     }
-
+    
     $beersTab = [];
     foreach($beerList as $b) {
       $beersTab[] = $b;
     }
     return $beersTab;
+  }
+  catch(Exception $e){
+    throw $e;
+  }
 }
