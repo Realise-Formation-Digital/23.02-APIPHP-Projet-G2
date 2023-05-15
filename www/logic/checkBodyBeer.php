@@ -49,8 +49,8 @@ function checkBodyBeer($body){
     if(!$body['contributed_by']){
         throw new Exception("Il n'y a pas de contribution.");
     }
-    if(strlen($body['image_url']) > 50){
-        throw new Exception("Il y a trop de nom");
+    if(strlen($body['image_url']) > 500){
+        throw new Exception("le nom de l'image est trop long");
     }
     if(count($body['food_pairing']) !== 3){
         throw new Exception("Il n'y a pas assez ou trop d'association à la nourriture, il en faut 3");
