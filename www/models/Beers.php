@@ -58,7 +58,7 @@ class Beers
                                           WHERE b.id = :id");
       $stmt->execute(['id' => $id]);
       $beer = $stmt->fetchAll(PDO::FETCH_OBJ);
-      if(count($beer) === 0){
+      if(!$beer){
         return ['message' => "La bière n'existe pas."];
       }else{
         return $beer;
