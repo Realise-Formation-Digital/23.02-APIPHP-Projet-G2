@@ -27,16 +27,17 @@ class Beers
      */
     public function searchBeers($limit, $offset) {
       try {
+        //var_dump($limit);
+        $offsetCalculation = ($offset-1)*$limit;
         $stmt = $this->connection->prepare("SELECT * FROM beers as b
-                                            INNER JOIN beer_ingredient ON b.id = beer_ingredient.beer_id
+                                            LEFT JOIN beer_ingredient ON b.id = beer_ingredient.beer_id
                                             INNER JOIN ingredients as i ON beer_ingredient.ingredient_id = i.id
+                                            ORDER BY b.id
                                             LIMIT $limit
-                                            OFFSET $offset");
+                                            OFFSET $offsetCalculation");
         $stmt->execute();
         $beer = $stmt->fetchAll(PDO::FETCH_OBJ);
-        if($beer === false){
-          $beer = ["message" => "l'id n'existe pas."];
-        }
+        var_dump($beer);
         return $beer;
       } catch(Exception $e) {
         throw $e;
@@ -143,7 +144,7 @@ class Beers
       $stmt = $this->connection->prepare($sql);
       $stmt->execute(array($tab[0],$tab[1],$tab[2],$tab[3],$tab[4],$tabFood[0],$tab[6],$tab[7],$tabFood[1],$tabFood[2]));
       $id = $this->connection->lastInsertId();
-      return $id;
+      return $this->readBeer($id);
     } catch (Exception $e) {
       throw $e;
     }

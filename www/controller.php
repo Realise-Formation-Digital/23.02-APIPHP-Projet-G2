@@ -74,11 +74,11 @@ function manageBeers()
           if ($queryPage) {
             $queryOffset = $queryPage;
           } else {
-            $queryOffset = 0;
+            $queryOffset = 1;
           }
         } else {
           $queryLimit = 50;
-          $queryOffset = 0;
+          $queryOffset = 1;
         }
         $beerData = $beer->searchBeers($queryLimit, $queryOffset);
         $beersTab = deserialized($beerData);
