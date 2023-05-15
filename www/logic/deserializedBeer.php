@@ -8,7 +8,6 @@
  */
 function deserialized($beerData){
   try{
-
     $beerList = [];
     foreach ($beerData as $beer) {
       $beerId = $beer->beer_id;

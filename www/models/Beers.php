@@ -37,7 +37,6 @@ class Beers
                                             OFFSET $offsetCalculation");
         $stmt->execute();
         $beer = $stmt->fetchAll(PDO::FETCH_OBJ);
-        var_dump($beer);
         return $beer;
       } catch(Exception $e) {
         throw $e;
