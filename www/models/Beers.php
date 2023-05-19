@@ -104,9 +104,7 @@ class Beers
         $stmt->execute();
   
         $beers = $stmt->fetchAll(PDO::FETCH_OBJ);
-        if(empty($beers)){
-          $beers = ["message" => "Aucunne bière contient du, $queryType"];
-        }
+
         return $beers;
       } catch(Exception $e) {
         throw $e;
