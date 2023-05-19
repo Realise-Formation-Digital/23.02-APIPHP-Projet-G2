@@ -77,7 +77,7 @@ class Beers
 
       $queryNameSQL = '%'. $queryName . '%';
       $stmt = $this->connection->prepare('SELECT * FROM beers as b
-                                          INNER JOIN beer_ingredient ON b.id = beer_ingredient.beer_id
+                                          LEFT JOIN beer_ingredient ON b.id = beer_ingredient.beer_id
                                           INNER JOIN ingredients as i ON beer_ingredient.ingredient_id = i.id 
                                           WHERE b.name 
                                           LIKE :queryName');
@@ -85,9 +85,6 @@ class Beers
       $stmt->execute();
 
       $beers = $stmt->fetchAll(PDO::FETCH_OBJ);
-      if(empty($beers)){
-        $beers = ["message" => "La bière, $queryName, n'existe pas."];
-      }
       return $beers;
     } catch(Exception $e) {
       throw $e;
